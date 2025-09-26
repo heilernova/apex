@@ -7,6 +7,7 @@ export class AppController {
 
   @Get()
   getData() {
+    throw new Error('Error de prueba desde el controlador');
     return this.appService.getData();
   }
 }
