@@ -51,33 +51,33 @@ create table users
   "created_at" timestamp with time zone default now(),                    --> Fecha y hora de creación del usuario
   "updated_at" timestamp with time zone default now(),                    --> Fecha y hora de la última actualización del usuario
   "last_login_at" timestamp with time zone default now(),                 --> Fecha y hora del último inicio de sesión
-  "status" user_status not null,                                          --> Estado del usuario (activo, inactivo, bloqueado, baneado)
-  "role" user_role not null,                                              --> Rol del usuario (admin, colaborador, usuario)
+  "status" user_status not null default 'active',                         --> Estado del usuario (activo, inactivo, bloqueado, baneado)
+  "role" user_role not null default 'user',                               --> Rol del usuario (admin, colaborador, usuario)
   "is_coach" boolean not null default false,                              --> Indica si el usuario es coach
   "is_judge" boolean not null default false,                              --> Indica si el usuario es juez
-  "judge_level" judge_level,                                              --> Nivel de juez (opcional)
+  "judge_level" judge_level default null,                                 --> Nivel de juez (opcional)
   "verified" boolean not null default false,                              --> Indica si el usuario ha verificado su cuenta
   "category" athlete_category not null default 'beginner',                --> Categoría del atleta
   "email" email not null,                                                 --> Correo electrónico
   "email_verified" boolean not null default false,                        --> Indica si el correo electrónico ha sido verificado
-  "cellphone" cellphone,                                                  --> Número de teléfono celular
+  "cellphone" cellphone not null,                                         --> Número de teléfono celular
   "cellphone_verified" boolean not null default false,                    --> Indica si el celular ha sido verificado
   "username" varchar(40) not null unique,                                 --> Nombre de usuario sin espacios ni caracteres especiales
-  "alias" varchar(40) not null,                                           --> Nombre para mostrar
+  "alias" varchar(40) default null,                                       --> Nombre para mostrar
   "first_name" varchar(20) not null,                                      --> Nombre
   "last_name" varchar(20) not null,                                       --> Apellido
   "gender" gender not null,                                               --> Genero (M=masculino, F=femenino)
   "birthdate" date not null,                                              --> Fecha de nacimiento
   "height" integer not null,                                              --> Altura en cm
   "weight" integer not null,                                              --> Peso en kg
-  "city_id" uuid references geo_cities("id"),                             --> Ciudad de residencia
-  "nationality_code" char(2) not null references geo_countries("code"),   --> Nacionalidad
+  "city_id" uuid not null references geo_cities("id"),                    --> Ciudad de residencia
+  "nationality" char(2) not null references geo_countries("code"),        --> Nacionalidad
   "jwt_secret" uuid not null default gen_random_uuid(),                   --> Secreto único para invalidar tokens JWT
   "password_hash" text not null,                                          --> Hash de la contraseña
   "permissions" text[] not null default array[]::text[],                  --> Permisos adicionales
-  "avatar_url" varchar(500),                                              --> imagen de avatar/cara
-  "cover_url" varchar(500),                                               --> imagen de banner del perfil
-  "body_image_url" varchar(500)                                           --> imagen de cuerpo completo
+  "avatar_url" varchar(500) default null,                                 --> imagen de avatar/cara
+  "cover_url" varchar(500) default null,                                  --> imagen de banner del perfil
+  "body_image_url" varchar(500) default null                              --> imagen de cuerpo completo
 );
 
 -- Historial de pesos de los usuarios
