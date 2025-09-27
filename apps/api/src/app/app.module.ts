@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './resources/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { AccountModule } from './resources/account/account.module';
+import { AccountsModule } from './resources/accounts/accounts.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AccountModule } from './resources/account/account.module';
     AuthModule,
     DatabaseModule,
     AccountModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
