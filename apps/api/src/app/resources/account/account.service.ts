@@ -76,7 +76,17 @@ export class AccountService {
         'verified',
         'birthdate'
       ]
-    })
+    });
+
+    if (updateData.weight) {
+      await this._db.insert({
+        table: 'user_weights',
+        data: {
+          user_id: userId,
+          weight: updateData.weight
+        }
+      });
+    }
     return user.rows[0];
   }
 }
