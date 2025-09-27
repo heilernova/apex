@@ -1,6 +1,7 @@
 import { ApiAuthRegisterBody } from '@app/schemas/api/auth';
 import { USER_GENDERS, UserGender } from '@app/schemas/types/user.types';
 import { IsDateString, IsEmail, IsIn, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, IsUUID, Matches, MaxLength, Min, MinLength } from 'class-validator';
+import { CityExists } from '../../../common/decorators';
 
 export class RegisterDto implements ApiAuthRegisterBody {
   @IsEmail()
@@ -44,6 +45,7 @@ export class RegisterDto implements ApiAuthRegisterBody {
   public readonly weight!: number; // in kg
 
   @IsUUID()
+  @CityExists({ message: 'La ciudad con el ID $value no existe' })
   public readonly cityId!: string;
 
   @IsString()

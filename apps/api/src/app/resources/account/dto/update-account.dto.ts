@@ -1,5 +1,6 @@
 import { ApiAccountUpdateBody } from '@app/schemas/api/account';
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
+import { CityExists } from '../../../common/decorators';
 
 export class UpdateAccountDto implements ApiAccountUpdateBody {
   @IsString()
@@ -48,6 +49,7 @@ export class UpdateAccountDto implements ApiAccountUpdateBody {
   @IsUUID()
   @IsOptional()
   @IsNotEmpty()
+  @CityExists({ message: 'La ciudad con el ID $value no existe' })
   cityId?: string | undefined;
 
   @IsString()
