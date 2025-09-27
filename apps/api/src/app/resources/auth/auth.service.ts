@@ -102,6 +102,16 @@ export class AuthService {
       returning: '*'
     })).rows[0];
 
+    // Registrar el peso
+    await this.databaseService.insert({
+      table: 'user_weights',
+      data: {
+        user_id: user.id,
+        weight: data.weight
+      },
+      returning: '*'
+    });
+
     const jwtPayload = this.payload(user);
 
     const token = await this.jwtService.signAsync(jwtPayload);
