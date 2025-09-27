@@ -7,7 +7,6 @@ export interface DbUser {
   status: UserStatus;
   role: UserRole;
   is_coach: boolean;
-  is_judge: boolean;
   judge_level: JudgeLevel | null; 
   verified: boolean;
   category: AthleteCategory;
@@ -16,7 +15,7 @@ export interface DbUser {
   cellphone: string;
   cellphone_verified: boolean;
   username: string;
-  alias?: string | null;
+  alias: string | null;
   first_name: string;
   last_name: string;
   gender: UserGender;
@@ -37,7 +36,6 @@ export interface DbUserInsert {
   status?: UserStatus;
   role?: UserRole;
   is_coach?: boolean;
-  is_judge?: boolean;
   judge_level?: JudgeLevel;
   verified?: boolean;
   category?: AthleteCategory;
@@ -66,7 +64,6 @@ export interface DbUserUpdate {
   status?: UserStatus;
   role?: UserRole;
   is_coach?: boolean;
-  is_judge?: boolean;
   judge_level?: JudgeLevel;
   verified?: boolean;
   category?: AthleteCategory;

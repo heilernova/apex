@@ -1,4 +1,4 @@
-import { UserGender } from '../../types';
+import { JudgeLevel, UserGender } from '../../types';
 import { ApiResponseBase } from '../api-response';
 
 export interface ApiAccountInfoResponse extends ApiResponseBase {
@@ -17,8 +17,7 @@ export interface ApiAccountInfoResponse extends ApiResponseBase {
     nationality: string;
     permissions: string[];
     isCoach: boolean;
-    isJudge: boolean;
-    judgeLevel: string | null;
+    judgeLevel: JudgeLevel | null;
     role: string;
     verified: boolean;
   }

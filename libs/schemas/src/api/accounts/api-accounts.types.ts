@@ -1,6 +1,6 @@
 import { JudgeLevel, UserGender, UserRole } from './../../types';
 
-export interface IApiAccountSchema {
+export interface ApiAccountSchema {
   id: string;
   username: string;
   email: {
@@ -26,19 +26,18 @@ export interface IApiAccountSchema {
     cityId: string;
     nationality: string;
   };
-  roles: {
+  access: {
     permissions: string[];
     isCoach: boolean;
-    isJudge: boolean;
     judgeLevel: JudgeLevel | null;
     role: UserRole;
   };
   verified: boolean;
 }
 
-export interface IApiAccountsGetAllResponse { 
+export interface ApiAccountsGetAllResponse { 
   data: {
     total: number;
-    accounts: IApiAccountSchema[];
+    accounts: ApiAccountSchema[];
   };
 }
