@@ -1,6 +1,6 @@
 import { ApiAccountUpdateBody } from '@app/schemas/api/account';
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
-import { CityExists } from '../../../common/decorators';
+import { CityExists, CountryExists } from '../../../common/decorators';
 
 export class UpdateAccountDto implements ApiAccountUpdateBody {
   @IsString()
@@ -55,5 +55,6 @@ export class UpdateAccountDto implements ApiAccountUpdateBody {
   @IsString()
   @IsOptional()
   @IsNotEmpty()
+  @CountryExists({ message: 'El país con el código $value no existe' })
   nationality?: string | undefined;
 }

@@ -8,6 +8,9 @@ import { AuthModule } from './resources/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { AccountModule } from './resources/account/account.module';
 import { AccountsModule } from './resources/accounts/accounts.module';
+import { CountryExistsValidator } from './common/validators/country-exists.validator';
+import { CityExistsValidator } from './common/validators/city-exists.validator';
+
 
 @Module({
   imports: [
@@ -22,6 +25,11 @@ import { AccountsModule } from './resources/accounts/accounts.module';
     AccountsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
+  providers: [
+    AppService, 
+    { provide: APP_GUARD, useClass: AuthGuard },
+    CountryExistsValidator,
+    CityExistsValidator
+  ],
 })
 export class AppModule {}

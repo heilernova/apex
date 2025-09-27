@@ -1,7 +1,7 @@
 import { ApiAuthRegisterBody } from '@app/schemas/api/auth';
 import { USER_GENDERS, UserGender } from '@app/schemas/types/user.types';
 import { IsDateString, IsEmail, IsIn, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, IsUUID, Matches, MaxLength, Min, MinLength } from 'class-validator';
-import { CityExists } from '../../../common/decorators';
+import { CityExists, CountryExists } from '../../../common/decorators';
 
 export class RegisterDto implements ApiAuthRegisterBody {
   @IsEmail()
@@ -49,6 +49,8 @@ export class RegisterDto implements ApiAuthRegisterBody {
   public readonly cityId!: string;
 
   @IsString()
+  @Matches(/^[A-Z]{2}$/, { message: 'El código de país debe ser un código ISO alpha-2 válido (2 letras mayúsculas)' })
+  @CountryExists({ message: 'El país con el código $value no existe' })
   public readonly nationality!: string; // ISO alpha-2 country code
 
   @IsString()
