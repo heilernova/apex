@@ -1,0 +1,91 @@
+import { AthleteCategory, JudgeLevel, UserGender, UserRole, UserStatus } from '../types';
+export interface DbUser {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+  last_login_at: Date;
+  status: UserStatus;
+  role: UserRole;
+  is_coach: boolean;
+  is_judge: boolean;
+  judge_level: JudgeLevel | null; 
+  verified: boolean;
+  category: AthleteCategory;
+  email: string;
+  email_verified: boolean;
+  cellphone: string;
+  cellphone_verified: boolean;
+  username: string;
+  alias?: string | null;
+  first_name: string;
+  last_name: string;
+  gender: UserGender;
+  birthdate: Date;
+  height: number;
+  weight: number;
+  city_id: string;
+  nationality: string;
+  jwt_secret: string;
+  password_hash: string;
+  permissions: string[];
+  avatar_url: string | null;
+  cover_url: string | null;
+  body_image_url: string | null;
+}
+
+export interface DbUserInsert {
+  status?: UserStatus;
+  role?: UserRole;
+  is_coach?: boolean;
+  is_judge?: boolean;
+  judge_level?: JudgeLevel;
+  verified?: boolean;
+  category?: AthleteCategory;
+  email: string;
+  email_verified?: boolean;
+  cellphone: string;
+  cellphone_verified?: boolean;
+  username: string;
+  alias?: string | null;
+  first_name: string;
+  last_name: string;
+  gender: UserGender;
+  birthdate: Date;
+  height: number;
+  weight: number;
+  city_id: string;
+  nationality: string;
+  password_hash: string;
+  permissions?: string[];
+  avatar_url?: string;
+  cover_url?: string;
+  body_image_url?: string;
+}
+
+export interface DbUserUpdate {
+  status?: UserStatus;
+  role?: UserRole;
+  is_coach?: boolean;
+  is_judge?: boolean;
+  judge_level?: JudgeLevel;
+  verified?: boolean;
+  category?: AthleteCategory;
+  email?: string;
+  email_verified?: boolean;
+  cellphone?: string;
+  cellphone_verified?: boolean;
+  username?: string;
+  alias?: string | null;
+  first_name?: string;
+  last_name?: string;
+  gender?: UserGender;
+  birthdate?: Date;
+  height?: number;
+  weight?: number;
+  city_id?: string;
+  nationality?: string;
+  permissions?: string[];
+  avatar_url?: string;
+  cover_url?: string;
+  body_image_url?: string;
+}
