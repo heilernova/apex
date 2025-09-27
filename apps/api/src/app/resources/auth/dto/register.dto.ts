@@ -1,20 +1,23 @@
 import { ApiAuthRegisterBody } from '@app/schemas/api/auth';
 import { USER_GENDERS, UserGender } from '@app/schemas/types/user.types';
 import { IsDateString, IsEmail, IsIn, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, IsUUID, Matches, MaxLength, Min, MinLength } from 'class-validator';
-import { CityExists, CountryExists } from '../../../common/decorators';
+import { CityExists, CountryExists, IsEmailUnique, IsUsernameUnique } from '../../../common/decorators';
 
 export class RegisterDto implements ApiAuthRegisterBody {
   @IsEmail()
+  @IsEmailUnique({ message: 'El correo electrónico $value ya está en uso' })
   public readonly email!: string;
-
-  @IsPhoneNumber()
-  public readonly cellphone!: string;
-
+  
   @IsString()
   @Matches(/^[a-zA-Z0-9_.-]*$/)
   @MaxLength(40)
   @IsNotEmpty()
+  @IsUsernameUnique({ message: 'El nombre de usuario $value ya está en uso' })
   public readonly username!: string;
+
+  @IsPhoneNumber()
+  public readonly cellphone!: string;
+
 
   @IsString()
   @MaxLength(40)

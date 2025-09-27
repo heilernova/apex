@@ -10,6 +10,7 @@ import { AccountModule } from './resources/account/account.module';
 import { AccountsModule } from './resources/accounts/accounts.module';
 import { CountryExistsValidator } from './common/validators/country-exists.validator';
 import { CityExistsValidator } from './common/validators/city-exists.validator';
+import { EmailUniqueValidator, UsernameUniqueValidator } from './common/validators';
 
 
 @Module({
@@ -29,7 +30,9 @@ import { CityExistsValidator } from './common/validators/city-exists.validator';
     AppService, 
     { provide: APP_GUARD, useClass: AuthGuard },
     CountryExistsValidator,
-    CityExistsValidator
+    CityExistsValidator,
+    EmailUniqueValidator,
+    UsernameUniqueValidator,
   ],
 })
 export class AppModule {}
