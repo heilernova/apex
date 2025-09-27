@@ -1,4 +1,4 @@
-import { UserGender } from '@app/schemas/types';
+import { JudgeLevel, UserGender } from '@app/schemas/types';
 
 export interface IUserInfo {
   username: string;
@@ -15,8 +15,7 @@ export interface IUserInfo {
   nationality: string;
   permissions: string[];
   isCoach: boolean;
-  isJudge: boolean;
-  judgeLevel: string | null;
+  judgeLevel: JudgeLevel | null;
   role: string;
   verified: boolean;
 }

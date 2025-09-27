@@ -19,7 +19,7 @@ export class AuthService {
       id: user.id,
       role: user.role,
       isCoach: user.is_coach,
-      isJudge: user.is_judge,
+      isJudge: user.judge_level !== null,
       permissions: user.permissions,
       name: user.alias || `${user.first_name} ${user.last_name}`,
       gender: user.gender,
@@ -65,7 +65,7 @@ export class AuthService {
       sessionInfo: {
         role: user.role,
         isCoach: user.is_coach,
-        isJudge: user.is_judge,
+        isJudge: user.judge_level !== null,
         permissions: user.permissions,
         name: user.alias || `${user.first_name} ${user.last_name}`
       },
@@ -123,7 +123,7 @@ export class AuthService {
       sessionInfo: {
         role: user.role,
         isCoach: user.is_coach,
-        isJudge: user.is_judge,
+        isJudge: user.judge_level !== null,
         permissions: user.permissions,
         name: user.alias || `${user.first_name} ${user.last_name}`
       }
@@ -159,7 +159,7 @@ export class AuthService {
       sessionInfo: {
         role:   user.role,
         isCoach: user.is_coach,
-        isJudge: user.is_judge,
+        isJudge: user.judge_level !== null,
         permissions: user.permissions,
         name: user.alias || `${user.first_name || ''} ${user.last_name || ''}`.trim()
       } 

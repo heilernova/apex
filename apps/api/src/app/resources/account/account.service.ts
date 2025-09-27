@@ -25,7 +25,6 @@ export class AccountService {
       u.nationality,
       u.permissions,
       u.is_coach AS "isCoach",
-      u.is_judge AS "isJudge",
       u.judge_level AS "judgeLevel",
       u.role,
       u.verified
@@ -72,7 +71,6 @@ export class AccountService {
         'nationality',
         'permissions',
         'is_coach as "isCoach"',
-        'is_judge as "isJudge"',
         'judge_level as "judgeLevel"',
         'role',
         'verified',
