@@ -17,6 +17,7 @@ export interface ApiAccountSchema {
     alias: string | null;
     gender: UserGender;
     birthdate: Date;
+    age: number;
   };
   physical: {
     height: number;
