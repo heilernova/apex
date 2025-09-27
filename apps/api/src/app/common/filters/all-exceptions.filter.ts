@@ -14,6 +14,16 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
+      message = exception.message || message;
+      const exceptionResponse = exception.getResponse();
+      let messages: string[] = [];
+      if (typeof exceptionResponse === 'object' && exceptionResponse !== null && 'message' in exceptionResponse) {
+        const msg = (exceptionResponse as any).message;
+        messages = Array.isArray(msg) ? msg : [msg];
+      } else if (typeof exceptionResponse === 'string') {
+        messages = [exceptionResponse];
+      }
+      error.push(...messages);
     } else if (exception instanceof Error) {
       status = 500;
       message = exception.message;
@@ -32,7 +42,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       message: message,
-      error: error,
+      errors: error,
     });
   }
 }
