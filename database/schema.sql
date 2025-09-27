@@ -54,8 +54,7 @@ create table users
   "status" user_status not null default 'active',                         --> Estado del usuario (activo, inactivo, bloqueado, baneado)
   "role" user_role not null default 'user',                               --> Rol del usuario (admin, colaborador, usuario)
   "is_coach" boolean not null default false,                              --> Indica si el usuario es coach
-  "is_judge" boolean not null default false,                              --> Indica si el usuario es juez
-  "judge_level" judge_level default null,                                 --> Nivel de juez (opcional)
+  "judge_level" judge_level default null,                                 --> Nivel de juez (null = no es juez, valor = es juez con ese nivel)
   "verified" boolean not null default false,                              --> Indica si el usuario ha verificado su cuenta
   "category" athlete_category not null default 'beginner',                --> Categoría del atleta
   "email" email not null,                                                 --> Correo electrónico
