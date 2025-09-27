@@ -11,7 +11,7 @@ export class AccountsService {
   ) { }
 
   public async getAll(filter?: { isCoach?: boolean, isJudge?: boolean, judgeLevel?: JudgeLevel | null, category?: AthleteCategory, limit?: number, offset?: number }): Promise<ApiAccountSchema[]> {
-    const sql = `SELECT * FROM users`;
+    const sql = `SELECT *, EXTRACT(YEAR FROM AGE(birthdate)) as age FROM users`;
     const conditions = [];
     const params = [];
     if (filter?.category) {
@@ -49,12 +49,12 @@ export class AccountsService {
     }
     
     const finalQuery = sql + whereClause + limitClause + offsetClause;
-    const result = (await this._db.query<DbUser>(finalQuery, params)).rows;
+    const result = (await this._db.query<DbUser & { age: number }>(finalQuery, params)).rows;
     
     return result.map(user => this.mapToApiAccountSchema(user));
   }
 
-  private mapToApiAccountSchema(user: DbUser): ApiAccountSchema {
+  private mapToApiAccountSchema(user: DbUser & { age: number }): ApiAccountSchema {
     return {
       id: user.id,
       verified: user.verified,
@@ -73,6 +73,7 @@ export class AccountsService {
         alias: user.alias,
         gender: user.gender,
         birthdate: user.birthdate,
+        age: user.age,
       },
       physical: {
         height: user.height,
