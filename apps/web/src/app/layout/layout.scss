@@ -1,0 +1,21 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+}
+
+header {
+  padding: .8rem 1rem;
+  color: var(--palette-header-color);
+}
+
+main {
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: var(--surface);
+}
+
+footer {
+  padding: .5rem 1rem;
+  background-color: var(--surface);
+}
