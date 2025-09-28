@@ -154,7 +154,7 @@ create table gyms
   "seo_keywords" text[] not null default array[]::text[],                    --> Palabras clave SEO
   "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],         --> Imágenes para Open Graph
   "images" text[] not null default array[]::text[],
-  "description" text | null                                                  --> Descripción del gimnasio
+  "description" text default null                                                  --> Descripción del gimnasio
 );
 
 create table gym_disciplines
