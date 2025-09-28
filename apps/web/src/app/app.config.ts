@@ -10,11 +10,18 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 
+import { es_ES, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es-CO';
+
+registerLocaleData(es);
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(appRoutes),
+    provideNzI18n(es_ES),
   ],
 };

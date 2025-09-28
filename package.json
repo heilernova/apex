@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "~20.2.0",
+    "@angular/animations": "^20.3.2",
     "@angular/common": "~20.2.0",
     "@angular/compiler": "~20.2.0",
     "@angular/core": "~20.2.0",
@@ -72,6 +73,8 @@
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "jsonc-eslint-parser": "^2.1.0",
+    "less": "^4.4.1",
+    "ng-zorro-antd": "^20.3.1",
     "nx": "21.5.3",
     "prettier": "^2.6.2",
     "ts-jest": "^29.4.0",
