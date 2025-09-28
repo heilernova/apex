@@ -10,8 +10,11 @@ import { AccountModule } from './resources/account/account.module';
 import { AccountsModule } from './resources/accounts/accounts.module';
 import { CountryExistsValidator } from './common/validators/country-exists.validator';
 import { CityExistsValidator } from './common/validators/city-exists.validator';
-import { EmailUniqueValidator, UsernameUniqueValidator } from './common/validators';
-
+import {
+  EmailUniqueValidator,
+  UsernameUniqueValidator,
+} from './common/validators';
+import { ExercisesModule } from './resources/exercises/exercises.module';
 
 @Module({
   imports: [
@@ -24,10 +27,11 @@ import { EmailUniqueValidator, UsernameUniqueValidator } from './common/validato
     DatabaseModule,
     AccountModule,
     AccountsModule,
+    ExercisesModule,
   ],
   controllers: [AppController],
   providers: [
-    AppService, 
+    AppService,
     { provide: APP_GUARD, useClass: AuthGuard },
     CountryExistsValidator,
     CityExistsValidator,
