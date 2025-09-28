@@ -115,8 +115,14 @@ create table team_members
   "user_id" uuid not null references users("id") on delete cascade,        --> ID del usuario
   "team_id" uuid not null references teams("id") on delete cascade,        --> ID del equipo
   "is_captain" boolean not null default false,                             --> Es el capitán del equipo
-  "joined_at" timestamp with time zone default now()                       --> Fecha de ingreso al equipo
+  "joined_at" timestamp with time zone default now(),                      --> Fecha de ingreso al equipo
+  primary key ("user_id", "team_id")
 );
+
+-- Asegurar que solo haya un capitán por equipo
+create unique index idx_team_members_one_captain 
+on team_members (team_id) 
+where is_captain = true;
 
 -- Gimnasios
 create type gym_status as enum('active', 'inactive', 'closed');
@@ -138,7 +144,7 @@ create table gyms
   "email" email not null,                                                    --> Correo de contacto
   "social_networks" jsonb not null default '{}'::jsonb,                      --> Redes sociales del gimnasio en formato JSON
   "address" varchar(100) not null,                                           --> Dirección del gimnasio
-  "city_id" uuid not null references geo_cities("id"),                   --> Ciudad donde se encuentra el gimnasio
+  "city_id" uuid not null references geo_cities("id"),                       --> Ciudad donde se encuentra el gimnasio
   "slug" varchar(100) not null,                                              --> Slug del gimnasio
   "url_google_maps" varchar(200) not null,                                   --> URL de Google Maps
   "geo_latitude" numeric(9,6) not null,                                      --> Latitud geográfica
@@ -147,7 +153,8 @@ create table gyms
   "seo_description" varchar(160),                                            --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                    --> Palabras clave SEO
   "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],         --> Imágenes para Open Graph
-  "images" text[] not null default array[]::text[]                           --> Imágenes del gimnasio
+  "images" text[] not null default array[]::text[],
+  "description" text | null                                                  --> Descripción del gimnasio
 );
 
 create table gym_disciplines
@@ -191,14 +198,14 @@ create table exercises
   "id" uuid primary key default gen_random_uuid(),                              --> Identificador único del ejercicio
   "created_at" timestamp with time zone default now(),                          --> Fecha y hora de creación del ejercicio
   "updated_at" timestamp with time zone default now(),                          --> Fecha y hora de la última actualización del ejercicio
-  "status" text not null,                                                       --> Estado del ejercicio (active, inactive)
+  "published" boolean not null default false,                                   --> Indica si el ejercicio está publicado
   "name" varchar(100) not null,                                                 --> Nombre del ejercicio
   "slug" varchar(100) not null unique,                                          --> Slug para URLs amigables
   "allowed_rm_types" rm_type[] not null default ARRAY['weight']::rm_type[],     --> Tipos de RM permitidos para este ejercicio
   "description" varchar(1000) not null,                                         --> Descripción del ejercicio
   "tags" text[] not null default array[]::text[],                               --> Etiquetas del ejercicio
   "primary_muscle_groups" text[] not null default array[]::text[],              --> Grupos musculares primarios
-  "url_youtube" varchar(200) not null,                                          --> URL de un video de YouTube
+  "videos" jsonb not null default '[]'::jsonb,                                  --> Videos del ejercicio (YouTube, Vimeo, etc.)
   "seo_title" varchar(70),                                                      --> Título SEO
   "seo_description" varchar(160),                                               --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                       --> Palabras clave SEO
@@ -235,8 +242,7 @@ create table workouts
   "id" uuid primary key default gen_random_uuid(),                                     --> Identificador único de la rutina
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación de la rutina
   "updated_at" timestamp with time zone default now(),                                 --> Fecha y hora de la última actualización de la rutina
-  "status" text not null default 'active',                                             --> Estado de la rutina (active, inactive, draft)
-  "gym_id" uuid references gyms("id"),                                                 --> ID del gimnasio (opcional)
+  "published" boolean not null default false,                                          --> Indica si la rutina está publicada
   "name" varchar(100) not null unique,                                                 --> Nombre de la rutina
   "description" text not null,                                                         --> Descripción detallada de la rutina
   "type" workout_type not null,                                                        --> Tipo de rutina (AMRAP, EMOM, RFT, TABATA, BENCHMARK, FOR_TIME, STRENGTH, CHIPPER, LADDER)
@@ -252,7 +258,7 @@ create table workouts
 );
 
 -- Historial de los resultados de rutinas realizadas por los usuarios
-create table user_workouts
+create table workout_results
 (
   "id" uuid primary key default gen_random_uuid(),                                     --> Identificador único del registro de la rutina
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación del registro
@@ -269,8 +275,7 @@ create table sponsors
 (
   "id" uuid primary key default gen_random_uuid(),                                  --> Identificador único del patrocinador
   "created_at" timestamp with time zone default now(),                              --> Fecha y hora de creación del patrocinador
-  "updated_at" timestamp with time zone default now(),                              --> Fecha y hora de la última actualización del patrocinador
-  "status" text not null,                                                           --> Estado del patrocinador (active, inactive)
+  "updated_at" timestamp with time zone default now(),                              --> Fecha y hora de la última actualización del patrocinador                                                           --> Estado del patrocinador (active, inactive)
   "name" varchar(100) not null unique,                                              --> Nombre del patrocinador
   "description" varchar(500) not null,                                              --> Descripción del patrocinador
   "website_url" varchar(200) not null,                                              --> URL del sitio web del patrocinador
