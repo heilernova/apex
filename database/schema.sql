@@ -183,6 +183,8 @@ create table gym_memberships
   "end_date" date not null                                                    --> Fecha de finalización de la membresía
 );
 
+create type rm_type as enum('weight', 'reps', 'time');
+
 -- Ejercicios
 create table exercises
 (
@@ -192,6 +194,7 @@ create table exercises
   "status" text not null,                                                       --> Estado del ejercicio (active, inactive)
   "name" varchar(100) not null,                                                 --> Nombre del ejercicio
   "slug" varchar(100) not null unique,                                          --> Slug para URLs amigables
+  "allowed_rm_types" rm_type[] not null default ARRAY['weight']::rm_type[],     --> Tipos de RM permitidos para este ejercicio
   "description" varchar(1000) not null,                                         --> Descripción del ejercicio
   "tags" text[] not null default array[]::text[],                               --> Etiquetas del ejercicio
   "primary_muscle_groups" text[] not null default array[]::text[],              --> Grupos musculares primarios
@@ -209,8 +212,19 @@ create table exercise_rms
   "created_at" timestamp with time zone default now(),                         --> Fecha y hora de creación del registro de RM
   "user_id" uuid not null references users("id") on delete cascade,            --> Identificador del usuario
   "exercise_id" uuid not null references exercises("id") on delete cascade,    --> Identificador del ejercicio
-  "weight" integer not null,                                                   --> peso en kg
-  "notes" varchar(200)                                                         --> Notas del registro de RM
+  "rm_type" rm_type not null,                                                  --> Tipo de RM (weight, reps, time)
+  "weight" integer,                                                            --> Peso en kg (para RM de peso)
+  "reps" integer,                                                              --> Repeticiones (para RM de repeticiones o reps en peso específico)
+  "time" interval,                                                             --> Tiempo (para RM de tiempo)
+  "target_reps" integer,                                                       --> Repeticiones objetivo (ej: para 5RM, target_reps=5)
+  "notes" varchar(200),                                                        --> Notas del registro de RM
+  
+  -- Constraints para validar que se proporcionen los campos correctos según el tipo
+  constraint check_weight_rm check (
+    (rm_type = 'weight' and weight is not null and reps is null and time is null) or
+    (rm_type = 'reps' and reps is not null and weight is null and time is null) or  
+    (rm_type = 'time' and time is not null and weight is null and reps is null)
+  )
 );
 
 create type workout_type as enum('AMRAP', 'EMOM', 'RFT', 'TABATA', 'BENCHMARK', 'FOR_TIME', 'STRENGTH', 'CHIPPER', 'LADDER');
