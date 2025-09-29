@@ -15,6 +15,7 @@ import {
   UsernameUniqueValidator,
 } from './common/validators';
 import { ExercisesModule } from './resources/exercises/exercises.module';
+import { GeoModule } from './resources/geo/geo.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ExercisesModule } from './resources/exercises/exercises.module';
     AccountModule,
     AccountsModule,
     ExercisesModule,
+    GeoModule,
   ],
   controllers: [AppController],
   providers: [
