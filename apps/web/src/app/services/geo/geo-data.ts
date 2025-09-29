@@ -59,6 +59,7 @@ export interface GeoCountry {
 }
 
 export interface GeoState {
+  id: string;
   name: string;
   code: string;
   cities: GeoCity[];
