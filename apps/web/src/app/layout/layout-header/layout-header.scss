@@ -4,6 +4,9 @@
   column-gap: 2rem;
   font-weight: 500;
   align-items: center;
+  a {
+    color: inherit;
+  }
   nav {
     display: flex;
     align-items: center;
@@ -13,6 +16,6 @@
   .access-controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: .5rem;
   }
 }

@@ -1,0 +1,36 @@
+<header>
+  <h1>
+    <a routerLink="/">APEX</a>
+  </h1>
+</header>
+<main>
+  <section>
+    <h2>Iniciar sesión</h2>
+    <form nz-form nzLayout="vertical" [formGroup]="formGroup">
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true" for="username">Usuario o correo electrónico</nz-form-label>
+        <nz-form-control>
+          <input nz-input type="text" id="username" name="username" formControlName="username" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true" for="password">Contraseña</nz-form-label>
+        <nz-form-control>
+          <input nz-input type="password" id="password" name="password" formControlName="password" />
+        </nz-form-control>
+      </nz-form-item>
+      <div class="remember-me">
+      </div>
+      <div class="actions">
+        <button nz-button nzType="primary" type="button" (click)="submit()" [nzLoading]="loading()">Iniciar sesión</button>
+        <button nz-button nzType="default" type="button" [disabled]="loading()" routerLink="/registrarse">Registrarse</button>
+        <button nz-button nzType="link" type="button" [disabled]="loading()">
+          <a href="/forgot-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </button>
+      </div>
+    </form>
+  </section>
+</main>
+<footer>
+  <div>&copy; 2025 APEX. todos los derechos reservados.</div>
+</footer>
