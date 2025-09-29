@@ -4,16 +4,17 @@ import {
   provideZonelessChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { appRoutes } from './app.routes';
 import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-
-import { es_ES, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es-CO';
+
+import { appRoutes } from './app.routes';
+import { es_ES, provideNzI18n } from 'ng-zorro-antd/i18n';
 
 registerLocaleData(es);
 
@@ -25,5 +26,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideAnimationsAsync(), // Requerido para ng-zorro-antd
     provideNzI18n(es_ES),
+    provideHttpClient(withFetch()),
   ],
 };
