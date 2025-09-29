@@ -27,3 +27,7 @@ body {
 .metric, .time, .weight, .reps {
   font-family: var(--font-mono);
 }
+
+.capitalize {
+  text-transform: capitalize;
+}
