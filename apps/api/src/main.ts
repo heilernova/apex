@@ -18,6 +18,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   const port = process.env.PORT || 3000;
+  app.enableCors();
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}`

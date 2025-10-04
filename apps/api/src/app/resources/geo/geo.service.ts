@@ -15,7 +15,7 @@ export class GeoService {
   }
 
   public async getStates(countryCode: string): Promise<{ code: string; name: string }[]> {
-    return (await this._db.query(`SELECT code, name FROM geo_states WHERE country_code = $1`, [countryCode])).rows;
+    return (await this._db.query(`SELECT code, name FROM geo_states WHERE country_code = $1 ORDER BY name`, [countryCode])).rows;
   }
 
   public async getStatesWithCities(countryCode: string): Promise<{ code: string; name: string; cities: { id: number; name: string; latitude: number; longitude: number }[] }[]> {
@@ -27,6 +27,7 @@ export class GeoService {
       LEFT JOIN geo_cities c ON s.id = c.state_id
       WHERE s.country_code = $1
       GROUP BY s.id, s.name
+      ORDER BY s.name
     `;
 
     const states = await this._db.query(sql, [countryCode]);
