@@ -36,7 +36,7 @@ export interface DbUserInsert {
   status?: UserStatus;
   role?: UserRole;
   is_coach?: boolean;
-  judge_level?: JudgeLevel;
+  judge_level?: JudgeLevel | null;
   verified?: boolean;
   category?: AthleteCategory;
   email: string;
@@ -61,10 +61,12 @@ export interface DbUserInsert {
 }
 
 export interface DbUserUpdate {
+  updated_at?: Date;
+  last_login_at?: Date;
   status?: UserStatus;
   role?: UserRole;
   is_coach?: boolean;
-  judge_level?: JudgeLevel;
+  judge_level?: JudgeLevel | null;
   verified?: boolean;
   category?: AthleteCategory;
   email?: string;
@@ -82,7 +84,8 @@ export interface DbUserUpdate {
   city_id?: string;
   nationality?: string;
   permissions?: string[];
-  avatar_url?: string;
-  cover_url?: string;
-  body_image_url?: string;
+  password_hash?: string;
+  avatar_url?: string | null;
+  cover_url?: string | null;
+  body_image_url?: string | null;
 }
