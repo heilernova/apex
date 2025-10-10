@@ -1,27 +1,26 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { verify } from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import {  DbUser, DbUserInsert } from '@app/schemas/db';
-import { hash, verify } from 'argon2';
-import { isEmail } from 'class-validator';
-import { DatabaseService } from '../../database/database.service';
 import { JwtPayload } from '../../auth';
 import { RegisterDto } from './dto/register.dto';
+import { IUser, UserRepository } from '../../repositories/user';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly _userRepository: UserRepository,
     private readonly jwtService: JwtService
   ) { }
 
-  private payload(user: DbUser): JwtPayload {
+  private payload(user: IUser): JwtPayload {
     return {
       id: user.id,
       role: user.role,
-      isCoach: user.is_coach,
-      isJudge: user.judge_level !== null,
+      isCoach: user.isCoach,
+      isJudge: user.judgeLevel !== null,
       permissions: user.permissions,
-      name: user.alias || `${user.first_name} ${user.last_name}`,
+      name: user.alias || `${user.firstName} ${user.lastName}`,
       gender: user.gender,
       verified: user.verified,
 
@@ -33,18 +32,18 @@ export class AuthService {
    * @param userId 
    */
   public async updateLastLogin(userId: string): Promise<boolean> {
-    const result = await this.databaseService.query(`UPDATE users SET last_login_at = NOW() WHERE id = $1`, [userId]);
-    return result.rowCount === 1;
+    const result = await this._userRepository.update(userId, { lastLoginAt: new Date() });
+    return result ? true : false;
   }
 
-  public async validateUser(username: string, password: string) {
+  public async validateUser(credentials: LoginDto) {
     // Aquí iría la lógica para validar el usuario contra la base de datos
-    const user = (await this.databaseService.query<DbUser>(`SELECT * FROM users WHERE lower(${isEmail(username) ? 'email' : 'username'}) = lower($1)`, [username])).rows[0] ?? null;
+    const user = await this._userRepository.get(credentials.username);
     if (!user) {
       throw new BadRequestException({ message: 'El usuario es incorrecto' });
     }
 
-    const isPasswordValid = await verify(user.password_hash, password);
+    const isPasswordValid = await verify(user.passwordHash, credentials.password);
     if (!isPasswordValid) {
       throw new BadRequestException({ message: 'La contraseña es incorrecta' });
     }
@@ -52,80 +51,46 @@ export class AuthService {
     const jwtPayload = this.payload(user);
 
     const token = await this.jwtService.signAsync(jwtPayload);
-    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwt_secret}` });
+    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwtSecret}` });
     await this.updateLastLogin(user.id);
     const warnings = [];
-    if (!user.email_verified){
+    if (!user.email.verified){
       warnings.push('El correo electrónico no está verificado');
     }
 
     return {
-      accessToken: token,
-      refreshToken: refreshToken,
-      sessionInfo: {
-        role: user.role,
-        isCoach: user.is_coach,
-        isJudge: user.judge_level !== null,
-        permissions: user.permissions,
-        name: user.alias || `${user.first_name} ${user.last_name}`
-      },
-      warnings: warnings.length > 0 ? warnings : undefined
-    };
+      warnings: warnings.length > 0 ? warnings : undefined,
+      data: {
+        accessToken: token,
+        refreshToken: refreshToken,
+        sessionInfo: {
+          role: user.role,
+          isCoach: user.isCoach,
+          isJudge: user.judgeLevel !== null,
+          permissions: user.permissions,
+          name: user.alias || `${user.firstName} ${user.lastName}`
+        },
+      }
+    }
   }
 
   public async register(data: RegisterDto) {
-    // Aquí iría la lógica para registrar un nuevo usuario en la base de datos
-    const values: DbUserInsert = {
-      status: 'active',
-      role: 'user',
-      is_coach: false,
-      email: data.email,
-      cellphone: data.cellphone,
-      username: data.username,
-      alias: data.alias ?? null,
-      first_name: data.firstName,
-      last_name: data.lastName,
-      birthdate: new Date(data.birthdate),
-      height: data.height,
-      weight: data.weight,
-      city_id: data.cityId,
-      nationality: data.nationality,
-      password_hash: await hash(data.password),
-      gender: data.gender
-    }
-
-
-
-    const user =(await this.databaseService.insert<DbUser>({
-      table: 'users',
-      data: values,
-      returning: '*'
-    })).rows[0];
-
-    // Registrar el peso
-    await this.databaseService.insert({
-      table: 'user_weights',
-      data: {
-        user_id: user.id,
-        weight: data.weight
-      },
-      returning: '*'
-    });
+    const user = await this._userRepository.create(data);
 
     const jwtPayload = this.payload(user);
 
     const token = await this.jwtService.signAsync(jwtPayload);
-    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwt_secret}` });
+    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwtSecret}` });
     
     return {
       accessToken: token,
       refreshToken: refreshToken,
       sessionInfo: {
         role: user.role,
-        isCoach: user.is_coach,
-        isJudge: user.judge_level !== null,
+        isCoach: user.isCoach,
+        isJudge: user.judgeLevel !== null,
         permissions: user.permissions,
-        name: user.alias || `${user.first_name} ${user.last_name}`
+        name: user.alias || `${user.firstName} ${user.lastName}`
       }
     };
   }
@@ -138,7 +103,7 @@ export class AuthService {
     
     const userId = decode.sub;
 
-    const user: DbUser | null = (await this.databaseService.query(`SELECT * FROM users WHERE id = $1`, [userId])).rows[0] ?? null;
+    const user = await this._userRepository.get(userId);
 
     if (!user) {
       throw new UnauthorizedException({ message: 'Usuario no encontrado' });
@@ -151,17 +116,17 @@ export class AuthService {
     const payload = this.payload(user);
 
     const accessToken = await this.jwtService.signAsync(payload);
-    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwt_secret}` });
+    const refreshToken = await this.jwtService.signAsync({ sub: user.id }, { expiresIn: '30d', secret: `${process.env.JWT_REFRESH_SECRET}+${user.jwtSecret}` });
   
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
       sessionInfo: {
         role:   user.role,
-        isCoach: user.is_coach,
-        isJudge: user.judge_level !== null,
+        isCoach: user.isCoach,
+        isJudge: user.judgeLevel !== null,
         permissions: user.permissions,
-        name: user.alias || `${user.first_name || ''} ${user.last_name || ''}`.trim()
+        name: user.alias || `${user.firstName || ''} ${user.lastName || ''}`.trim()
       } 
     };
   }

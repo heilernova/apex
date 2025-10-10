@@ -1,5 +1,4 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiAuthLoginResponse } from '@app/schemas/api/auth';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -12,17 +11,8 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  public async login(@Body() body: LoginDto): Promise<ApiAuthLoginResponse> {
-    const result = await this.authService.validateUser(body.username, body.password);
-    return {
-      message: 'Inicio de sesión exitoso',
-      warnings: result.warnings ? result.warnings : undefined,
-      data: {
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        sessionInfo: result.sessionInfo
-      },
-    };
+  public async login(@Body() body: LoginDto) {
+    return this.authService.validateUser(body);
   }
 
   @Public()

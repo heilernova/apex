@@ -1,9 +1,10 @@
 import { ApiAuthRegisterBody } from '@app/schemas/api/auth';
 import { USER_GENDERS, UserGender } from '@app/schemas/types/user.types';
-import { IsDateString, IsEmail, IsIn, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, IsUUID, Matches, MaxLength, Min, MinLength } from 'class-validator';
+import { IsDate, IsEmail, IsIn, IsNotEmpty, IsNumber, IsPhoneNumber, IsString, IsUUID, Matches, MaxLength, Min, MinLength } from 'class-validator';
 import { CityExists, CountryExists, IsEmailUnique, IsUsernameUnique } from '../../../common/decorators';
+import { Transform } from 'class-transformer';
 
-export class RegisterDto implements ApiAuthRegisterBody {
+export class RegisterDto implements Omit<ApiAuthRegisterBody, 'birthdate'> {
   @IsEmail()
   @IsEmailUnique({ message: 'El correo electrónico $value ya está en uso' })
   public readonly email!: string;
@@ -36,8 +37,9 @@ export class RegisterDto implements ApiAuthRegisterBody {
   @IsIn(USER_GENDERS)
   public readonly gender!: UserGender;
 
-  @IsDateString()
-  public readonly birthdate!: string; // ISO 8601 date string
+  @IsDate()
+  @Transform(({ value }) => new Date(value))
+  public readonly birthdate!: Date; // ISO 8601 date string
 
   @IsNumber()
   @Min(30)
