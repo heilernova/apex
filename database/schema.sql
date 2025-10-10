@@ -6,30 +6,63 @@ create schema public;
 create extension if not exists "unaccent";
 create extension if not exists "pgcrypto";
 
-
 create table geo_countries
 (
-  "code" char(2) primary key,
+  "id" uuid primary key default gen_random_uuid(),
+  "code" char(2),
   "name" varchar(100) not null,
   "phone_code" varchar(8) not null,
-  "masculine_demonym" varchar(50), -- Ejemplo: 'mexicano'
-  "feminine_demonym" varchar(50)   -- Ejemplo: 'mexicana'
+  "masculine_demonym" varchar(50), -- Ejemplo: 'Colombiano'
+  "feminine_demonym" varchar(50)   -- Ejemplo: 'Colombiana'
 );
 
-create table geo_states
+create table geo_administrative_divisions
 (
   "id" uuid primary key default gen_random_uuid(),
-  "code" varchar(20),
-  "country_code" char(2) not null references geo_countries("code"),
-  "name" varchar(50) not null
+  "country_id" uuid not null,
+  "parent_id" uuid,                                                  --> permite jerarquía multinivel
+  "code" varchar(20),                                                --> código de la división
+  "name" varchar(255) not null,                                      --> nombre en idioma local
+  "level" integer not null,                                          --> nivel jerárquico (1=estado, 2=provincia, 3=condado, etc.)
+  "type" varchar(50) not null,                                       --> 'state', 'department', 'province', 'county', 'district', etc.
+  "is_active" boolean default true,                                  --> estado de la división
+  "created_at" timestamp default current_timestamp,                  --> marca temporal de creación
+  "updated_at" timestamp default current_timestamp,                  --> marca temporal de última actualización
+
+  constraint fk_admin_divisions_country 
+    foreign key (country_id) references geo_countries(id) 
+    on delete cascade on update cascade,
+  
+  constraint fk_admin_divisions_parent 
+    foreign key (parent_id) references geo_administrative_divisions(id) 
+    on delete cascade on update cascade,
+  
+  constraint uk_admin_divisions_country_parent_code 
+    unique (country_id, parent_id, code)
 );
 
-create table geo_cities
-(
-  "id" uuid primary key default gen_random_uuid(),
-  "code" varchar(20),
-  "name" varchar(50) not null,
-  "state_id" uuid not null references geo_states("id")
+create table geo_cities (
+  "id" uuid primary key default gen_random_uuid(),                   --> ID único
+  "country_id" uuid not null,                                        --> referencia directa al país
+  "division_id" uuid,                                                --> división administrativa más específica
+  "name" varchar(255) not null,                                      --> nombre de la ciudad
+  "type" varchar(50) default 'city',                                 --> 'city', 'municipality', 'town', 'village', etc.
+  "postal_code" varchar(20),                                         --> código postal principal
+  "latitude" decimal(10, 8),                                         --> coordenadas geográficas
+  "longitude" decimal(11, 8),                                        --> coordenadas geográficas
+  "population" integer,                                              --> población aproximada
+  "is_capital_level" integer,                                        --> nivel de capital (1=nacional, 2=estatal, 3=provincial, etc.)
+  "is_active" boolean default true,
+  "created_at" timestamp default current_timestamp,
+  "updated_at" timestamp default current_timestamp,
+
+  constraint fk_cities_country 
+    foreign key (country_id) references geo_countries(id) 
+    on delete cascade on update cascade,
+      
+  constraint fk_cities_division 
+    foreign key (division_id) references geo_administrative_divisions(id) 
+    on delete set null on update cascade
 );
 
 create type user_status as enum('active', 'inactive', 'blocked', 'banned');
@@ -70,7 +103,7 @@ create table users
   "height" integer not null,                                              --> Altura en cm
   "weight" integer not null,                                              --> Peso en kg
   "city_id" uuid not null references geo_cities("id"),                    --> Ciudad de residencia
-  "nationality" char(2) not null references geo_countries("code"),        --> Nacionalidad
+  "nationality" uuid not null references geo_countries("id"),             --> Nacionalidad
   "jwt_secret" uuid not null default gen_random_uuid(),                   --> Secreto único para invalidar tokens JWT
   "password_hash" text not null,                                          --> Hash de la contraseña
   "permissions" text[] not null default array[]::text[],                  --> Permisos adicionales
@@ -102,11 +135,11 @@ create table teams
   "slug" varchar(100) not null unique,                                    --> Slug para URLs amigables
   "description" text,                                                     --> Descripción del equipo
   "city_id" uuid references geo_cities("id"),                             --> Ciudad de origen del equipo
-  "country_code" char(2) references geo_countries("code"),                --> País de origen del equipo
+  "country_id" uuid references geo_countries("id"),                      --> País de origen del equipo
   "seo_title" varchar(70),                                                --> Título SEO
   "seo_description" varchar(160),                                         --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                 --> Palabras clave SEO
-  "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],      --> Imágenes para Open Graph
+  "seo_open_graph_images" jsonb not null default '[]'::jsonb,             --> Imágenes para Open Graph
   "images" text[] not null default array[]::text[]                        --> Imágenes del equipo
 );
 
@@ -219,19 +252,10 @@ create table exercise_rms
   "created_at" timestamp with time zone default now(),                         --> Fecha y hora de creación del registro de RM
   "user_id" uuid not null references users("id") on delete cascade,            --> Identificador del usuario
   "exercise_id" uuid not null references exercises("id") on delete cascade,    --> Identificador del ejercicio
-  "rm_type" rm_type not null,                                                  --> Tipo de RM (weight, reps, time)
-  "weight" integer,                                                            --> Peso en kg (para RM de peso)
-  "reps" integer,                                                              --> Repeticiones (para RM de repeticiones o reps en peso específico)
-  "time" interval,                                                             --> Tiempo (para RM de tiempo)
   "target_reps" integer,                                                       --> Repeticiones objetivo (ej: para 5RM, target_reps=5)
-  "notes" varchar(200),                                                        --> Notas del registro de RM
-  
-  -- Constraints para validar que se proporcionen los campos correctos según el tipo
-  constraint check_weight_rm check (
-    (rm_type = 'weight' and weight is not null and reps is null and time is null) or
-    (rm_type = 'reps' and reps is not null and weight is null and time is null) or  
-    (rm_type = 'time' and time is not null and weight is null and reps is null)
-  )
+  "type" rm_type not null,                                                  --> Tipo de RM (weight, reps, time)
+  "result" numeric(12, 3) not null,                                            --> Resultado numérico para ordenar (peso en kg, repeticiones, tiempo en segundos)
+  "notes" varchar(200)                                                         --> Notas del registro de RM
 );
 
 create type workout_type as enum('AMRAP', 'EMOM', 'RFT', 'TABATA', 'BENCHMARK', 'FOR_TIME', 'STRENGTH', 'CHIPPER', 'LADDER');
@@ -243,8 +267,9 @@ create table workouts
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación de la rutina
   "updated_at" timestamp with time zone default now(),                                 --> Fecha y hora de la última actualización de la rutina
   "published" boolean not null default false,                                          --> Indica si la rutina está publicada
+  "gym_id" uuid references gyms("id"),                                                 --> ID del gimnasio (opcional)
   "name" varchar(100) not null unique,                                                 --> Nombre de la rutina
-  "description" text not null,                                                         --> Descripción detallada de la rutina
+  "description" varchar(500) not null,                                                 --> Descripción detallada de la rutina
   "type" workout_type not null,                                                        --> Tipo de rutina (AMRAP, EMOM, RFT, TABATA, BENCHMARK, FOR_TIME, STRENGTH, CHIPPER, LADDER)
   "time_cap" interval,                                                                 --> límite de tiempo en horas o minutos (opcional)
   "score_order" varchar(4) not null check (score_order in ('asc', 'desc')),            --> orden de puntuación (ascendente o descendente)
@@ -253,7 +278,7 @@ create table workouts
   "seo_title" varchar(70),                                                             --> Título SEO
   "seo_description" varchar(160),                                                      --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                              --> Palabras clave SEO
-  "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],                   --> Imágenes para Open Graph
+  "seo_open_graph_images" jsonb not null default '[]'::jsonb,                          --> Imágenes para Open Graph
   "images" text[] not null default array[]::text[]                                     --> Imágenes de la rutina
 );
 
@@ -283,7 +308,7 @@ create table sponsors
   "seo_title" varchar(70),                                                          --> Título SEO para el patrocinador
   "seo_description" varchar(160),                                                   --> Descripción SEO para el patrocinador
   "seo_keywords" text[] not null default array[]::text[],                           --> Palabras clave SEO para el patrocinador
-  "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],                --> Imágenes Open Graph en formato JSON
+  "seo_open_graph_images" jsonb not null default '{}'::jsonb,                       --> Imágenes Open Graph en formato JSON
   "logo_url" varchar(500) not null,                                                 --> Logo del patrocinador
   "images" text[] not null default array[]::text[]                                  --> Imágenes relacionadas con el patrocinador
 );
@@ -305,7 +330,7 @@ create table competitions
   "seo_title" varchar(70),                                                          --> Título SEO para la competencia
   "seo_description" varchar(160),                                                   --> Descripción SEO para la competencia
   "seo_keywords" text[] not null default array[]::text[],                           --> Palabras clave SEO para la competencia
-  "seo_open_graph_images" jsonb[] not null default array[]::jsonb[],                --> Imágenes Open Graph en formato JSON
+  "seo_open_graph_images" jsonb not null default '{}'::jsonb,                       --> Imágenes Open Graph en formato JSON
   "images" text[] not null default array[]::text[]                                  --> Imágenes relacionadas con la competencia
 );
 
@@ -322,7 +347,7 @@ create table competition_editions
   "end_date" date not null,                                                        --> Fecha de finalización de la competencia
   "registration_open_date" date not null,                                          --> Fecha de apertura de inscripciones
   "registration_close_date" date not null,                                         --> Fecha de cierre de inscripciones
-  "city_id" uuid not null references geo_cities("id")                          --> Ciudad donde se realiza la competencia
+  "city_id" uuid not null references geo_cities("id")                              --> Ciudad donde se realiza la competencia
 );
 create index idx_competition_editions_competition_year on competition_editions(competition_id, year);
 
