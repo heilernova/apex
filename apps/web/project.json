@@ -71,7 +71,8 @@
           "buildTarget": "web:build:production"
         },
         "development": {
-          "buildTarget": "web:build:development"
+          "buildTarget": "web:build:development",
+          "port": 4230
         }
       },
       "defaultConfiguration": "development"
