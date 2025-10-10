@@ -8,7 +8,6 @@ export const generateDbSchema = async (options?: { includeData?: boolean }) => {
   const urlCountries = 'https://gist.githubusercontent.com/brenes/1095110/raw/c8f208b03485ba28f97c500ab7271e8bce43b9c6/paises.csv';
   const countries = (await extractData(urlCountries)).map(x => {
     return {
-      id: crypto.randomUUID(),
       code: x[3],
       name: x[0],
       phone_code: x[5]
@@ -19,7 +18,7 @@ export const generateDbSchema = async (options?: { includeData?: boolean }) => {
   
   schema += `\n\n-- Fuente: ${urlCountries}\n`;
   countries.forEach((row) => {
-    schema += `INSERT INTO geo_countries ("id", "code", "name", "phone_code") VALUES ('${row.id}', '${row.code}', '${row.name}', '${row.phone_code}');\n`;
+    schema += `INSERT INTO geo_countries ("code", "name", "phone_code") VALUES ('${row.code}', '${row.name}', '${row.phone_code}');\n`;
   });
 
   // División administrativa de Colombia (departamentos y municipios)
@@ -29,8 +28,8 @@ export const generateDbSchema = async (options?: { includeData?: boolean }) => {
     const idMunicipalityType = crypto.randomUUID();
 
     schema += `\n\n-- División administrativa de Colombia (departamentos y municipios)\n`;
-    schema += `insert into geo_administrative_levels ("id", "country_id", "name", "name_plural", "level") values ('${idDepartmentType}', '${co.id}', 'Departamento', 'Departamentos', '1');\n`;
-    schema += `insert into geo_administrative_levels ("id", "country_id", "name", "name_plural", "level") values ('${idMunicipalityType}', '${co.id}', 'Municipio', 'Municipios', '2');\n`;
+    schema += `insert into geo_administrative_levels ("id", "country_code", "name", "name_plural", "level") values ('${idDepartmentType}', '${co.code}', 'Departamento', 'Departamentos', '1');\n`;
+    schema += `insert into geo_administrative_levels ("id", "country_code", "name", "name_plural", "level") values ('${idMunicipalityType}', '${co.code}', 'Municipio', 'Municipios', '2');\n`;
 
     const urlDepartments = 'https://raw.githubusercontent.com/heilernova/colombia-data/refs/heads/main/geo/departments.csv';
     const departments = (await extractData(urlDepartments)).map(x => {
@@ -43,7 +42,7 @@ export const generateDbSchema = async (options?: { includeData?: boolean }) => {
     });
   
     departments.forEach((row) => {
-      schema += `INSERT INTO geo_administrative_divisions ("id", "country_id", "level_id", "code", "name") values ('${row.id}', '${co.id}', '${row.level_id}', '${row.code}', '${row.name}');\n`;
+      schema += `INSERT INTO geo_administrative_divisions ("id", "country_code", "level_id", "code", "name") values ('${row.id}', '${co.code}', '${row.level_id}', '${row.code}', '${row.name}');\n`;
     }); 
 
     const urlCities = 'https://raw.githubusercontent.com/heilernova/colombia-data/refs/heads/main/geo/municipalities.csv';
@@ -58,7 +57,7 @@ export const generateDbSchema = async (options?: { includeData?: boolean }) => {
 
     cities.forEach((row) => {
       if (row.parentId) {
-        schema += `INSERT INTO geo_administrative_divisions ("id", "country_id", "level_id", "parent_id", "code", "name", "is_capital") values ('${crypto.randomUUID()}', '${co.id}', '${idMunicipalityType}', '${row.parentId}', '${row.code}', '${row.name}', ${row.is_capital});\n`;
+        schema += `INSERT INTO geo_administrative_divisions ("id", "country_code", "level_id", "parent_id", "code", "name", "is_capital") values ('${crypto.randomUUID()}', '${co.code}', '${idMunicipalityType}', '${row.parentId}', '${row.code}', '${row.name}', ${row.is_capital});\n`;
       } 
     });
   }

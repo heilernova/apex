@@ -15,7 +15,6 @@ export class GeoRepository {
   public async getCountries(): Promise<IGeoCountry[]> {
      const sql = `
       select
-        id,
         code,
         phone_code as "phoneCode",
         name,
@@ -37,13 +36,12 @@ export class GeoRepository {
 
   /**
    * Obtiene los niveles administrativos de un país.
-   * @param value ID o código del país
+   * @param code Código del país
    * @returns Lista de niveles administrativos
    */
-  public async getAdministrativeLevels(value: string): Promise<IGeoAdministrativeLevel[]> {
-    const condition = isUUID(value) ? 'country_id = $1' : ' country_id = (SELECT id FROM geo_countries WHERE code = $1)';
-    const params = isUUID(value) ? [value] : [value.toUpperCase()];
-    const result = await this._db.query<IGeoAdministrativeLevel>(`SELECT id, name, name_plural as "namePlural", level FROM geo_administrative_levels WHERE ${condition}`, params);
+  public async getAdministrativeLevels(code: string): Promise<IGeoAdministrativeLevel[]> {
+    const condition = 'country_code = $1';
+    const result = await this._db.query<IGeoAdministrativeLevel>(`SELECT id, name, name_plural as "namePlural", level FROM geo_administrative_levels WHERE ${condition}`, [code.toUpperCase()]);
     return result.rows;
   }
 
@@ -55,7 +53,7 @@ export class GeoRepository {
   public async getAllAdministrationDivisions(id: string): Promise<IGeoDivision[]> {
     const sql = `select
       id,
-      country_id as "countryId",
+      country_code as "countryCode",
       level_id as "levelId",
       parent_id as "parentId",
       code,
@@ -77,7 +75,7 @@ export class GeoRepository {
   public async getChildDivisions(id: string): Promise<IGeoDivision[]> {
     const sql = `select 
       id,
-      country_id as "countryId",
+      country_code as "countryCode",
       level_id as "levelId",
       parent_id as "parentId",
       code,
@@ -89,6 +87,48 @@ export class GeoRepository {
     from geo_administrative_divisions where parent_id = $1 order by is_capital desc, name`;
     const result = await this._db.query<IGeoDivision>(sql, [id]);
     return result.rows;
+  }
+
+  /**
+   * Obtiene una división administrativa por su ID.
+   * @param id Id de la división administrativa
+   * @returns Información de la división o null si no se encuentra
+   */
+  public async getDivision(id: string): Promise<IGeoDivision | null> {
+     const sql = `select 
+      id,
+      country_code as "countryCode",
+      level_id as "levelId",
+      parent_id as "parentId",
+      code,
+      name,
+      is_capital as "isCapital",
+      is_active as "isActive",
+      created_at as "createdAt",
+      updated_at as "updatedAt"
+    from geo_administrative_divisions where where id = $1 limit 1`;
+    const result = await this._db.query<IGeoDivision>(sql, [id]);
+    return result.rows[0] ?? null;
+  }
+
+  /**
+   * Verifica si una división administrativa existe.
+   * @param id ID de la división administrativa
+   * @returns Verdadero si existe, falso en caso contrario
+   */
+  public async existsDivision(id: string): Promise<boolean> {
+    const result = await this._db.query(`SELECT 1 FROM geo_administrative_divisions WHERE id = $1 LIMIT 1`, [id]);
+    return result.rowCount === 1;
+  }
+
+  /**
+   * Verifica si un país existe.
+   * @param code Código del país (ISO 3166-1 alpha-2)
+   * @returns Verdadero si existe, falso en caso contrario
+   */
+  public async existsCountry(code: string): Promise<boolean> {
+    const result = await this._db.query(`SELECT 1 FROM geo_countries WHERE code = upper($1) LIMIT 1`, [code]);
+    return result.rowCount === 1;
   }
 }
 
