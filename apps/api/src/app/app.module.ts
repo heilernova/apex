@@ -16,6 +16,7 @@ import {
 } from './common/validators';
 import { ExercisesModule } from './resources/exercises/exercises.module';
 import { GeoModule } from './resources/geo/geo.module';
+import { RepositoriesModule } from './repositories/repositories.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GeoModule } from './resources/geo/geo.module';
     AccountsModule,
     ExercisesModule,
     GeoModule,
+    RepositoriesModule,
   ],
   controllers: [AppController],
   providers: [

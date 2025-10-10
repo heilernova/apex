@@ -9,10 +9,13 @@ export class GeoController {
   @Public()
   @Get('countries')
   public async getCountries() {
-    const countries = await this.geoService.getCountries();
-    return {
-      data: countries,
-    }
+    return this.geoService.getCountries();
+  }
+
+  @Public()
+  @Get('countries/:code/administrative-levels')
+  public async getAdministrativeLevelsByCountryCode(@Param('code') code: string) {
+    return this.geoService.getAdministrativeLevels(code)
   }
 
   @Public()
@@ -25,11 +28,14 @@ export class GeoController {
   }
 
   @Public()
-  @Get('countries/:code/states')
-  public async getStatesByCountryCode(@Param('code') code: string) {
-    const states = await this.geoService.getStatesWithCities(code.toUpperCase());
-    return {
-      data: states,
-    }
+  @Get('countries/administrative-divisions/:id')
+  public async getStates(@Param('id') id: string) {
+    return this.geoService.administrativeDivisions(id);
+  }
+
+  @Public()
+  @Get('countries/administrative-divisions/:id/children')
+  public async getChildren(@Param('id') id: string) {
+    return this.geoService.childrenOfDivision(id);
   }
 }
