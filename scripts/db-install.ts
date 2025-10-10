@@ -3,7 +3,7 @@ import { generateDbSchema } from "./functions/generate-db-schema";
 
 const main = async () => {
   process.loadEnvFile('.env');
-  const schema = await generateDbSchema();
+  const schema = await generateDbSchema({ includeData: true });
   const pool = new Pool();
 
   await pool.query(schema);
