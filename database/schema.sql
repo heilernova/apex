@@ -8,8 +8,7 @@ create extension if not exists "pgcrypto";
 
 create table geo_countries
 (
-  "id" uuid primary key default gen_random_uuid(),
-  "code" char(2),
+  "code" char(2) primary key,  -- Código ISO 3166-1 alpha-2
   "name" varchar(100) not null,
   "phone_code" varchar(8) not null,
   "masculine_demonym" varchar(50), -- Ejemplo: 'Colombiano'
@@ -19,7 +18,7 @@ create table geo_countries
 create table geo_administrative_levels
 (
   "id" uuid primary key default gen_random_uuid(),
-  "country_id" uuid not null references geo_countries(id) on delete cascade on update cascade,
+  "country_code" char(2) not null references geo_countries(code) on delete cascade on update cascade,
   "level" integer not null,                                                              --> nivel jerárquico (1=estado, 2=provincia, 3=condado, etc.)
   "name" varchar(50) not null,   
   "name_plural" varchar(50),                                                           --> nombre del nivel (state, province, county, etc.)
@@ -29,7 +28,7 @@ create table geo_administrative_levels
 create table geo_administrative_divisions
 (
   "id" uuid primary key default gen_random_uuid(),
-  "country_id" uuid not null,
+  "country_code" char(2) not null,
   "level_id" uuid not null references geo_administrative_levels(id) on delete cascade on update cascade,
   "parent_id" uuid,                                                                                           --> permite jerarquía multinivel
   "code" varchar(20) unique,                                                                                  --> código de la división
@@ -40,7 +39,7 @@ create table geo_administrative_divisions
   "updated_at" timestamp default current_timestamp,                                                           --> marca temporal de última actualización
 
   constraint fk_admin_divisions_country 
-    foreign key (country_id) references geo_countries(id) 
+    foreign key (country_code) references geo_countries(code) 
     on delete cascade on update cascade,
   
   constraint fk_admin_divisions_parent 
@@ -48,7 +47,7 @@ create table geo_administrative_divisions
     on delete cascade on update cascade,
   
   constraint uk_admin_divisions_country_parent_code 
-    unique (country_id, parent_id, code)
+    unique (country_code, parent_id, code)
 );
 
 -- Las ciudades/municipios se almacenan en geo_administrative_divisions
@@ -92,7 +91,7 @@ create table users
   "height" integer not null,                                              --> Altura en cm
   "weight" integer not null,                                              --> Peso en kg
   "city_id" uuid not null references geo_administrative_divisions("id"),   --> Ciudad/municipio de residencia
-  "nationality" uuid not null references geo_countries("id"),             --> Nacionalidad
+  "nationality" char(2) not null references geo_countries("code"),             --> Nacionalidad
   "jwt_secret" uuid not null default gen_random_uuid(),                   --> Secreto único para invalidar tokens JWT
   "password_hash" text not null,                                          --> Hash de la contraseña
   "permissions" text[] not null default array[]::text[],                  --> Permisos adicionales
@@ -124,7 +123,7 @@ create table teams
   "slug" varchar(100) not null unique,                                    --> Slug para URLs amigables
   "description" text,                                                     --> Descripción del equipo
   "city_id" uuid references geo_administrative_divisions("id"),          --> Ciudad de origen del equipo
-  "country_id" uuid references geo_countries("id"),                      --> País de origen del equipo
+  "country_code" char(2) references geo_countries("code"),                --> País de origen del equipo
   "seo_title" varchar(70),                                                --> Título SEO
   "seo_description" varchar(160),                                         --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                 --> Palabras clave SEO
