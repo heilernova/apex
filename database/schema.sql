@@ -16,18 +16,28 @@ create table geo_countries
   "feminine_demonym" varchar(50)   -- Ejemplo: 'Colombiana'
 );
 
+create table geo_administrative_levels
+(
+  "id" uuid primary key default gen_random_uuid(),
+  "country_id" uuid not null references geo_countries(id) on delete cascade on update cascade,
+  "level" integer not null,                                                              --> nivel jerárquico (1=estado, 2=provincia, 3=condado, etc.)
+  "name" varchar(50) not null,   
+  "name_plural" varchar(50),                                                           --> nombre del nivel (state, province, county, etc.)
+  "description" varchar(255)                                                                    --> descripción del nivel
+);
+
 create table geo_administrative_divisions
 (
   "id" uuid primary key default gen_random_uuid(),
   "country_id" uuid not null,
-  "parent_id" uuid,                                                  --> permite jerarquía multinivel
-  "code" varchar(20) unique,                                         --> código de la división
-  "name" varchar(255) not null,                                      --> nombre en idioma local
-  "level" integer not null,                                          --> nivel jerárquico (1=estado, 2=provincia, 3=condado, etc.)
-  "type" varchar(50) not null,                                       --> 'state', 'department', 'province', 'county', 'district', etc.
-  "is_active" boolean default true,                                  --> estado de la división
-  "created_at" timestamp default current_timestamp,                  --> marca temporal de creación
-  "updated_at" timestamp default current_timestamp,                  --> marca temporal de última actualización
+  "level_id" uuid not null references geo_administrative_levels(id) on delete cascade on update cascade,
+  "parent_id" uuid,                                                                                           --> permite jerarquía multinivel
+  "code" varchar(20) unique,                                                                                  --> código de la división
+  "name" varchar(50) not null,                                                                                --> nombre
+  "is_capital" boolean default false,                                                                         --> indica si es capital de la división padre
+  "is_active" boolean default true,                                                                           --> estado de la división
+  "created_at" timestamp default current_timestamp,                                                           --> marca temporal de creación
+  "updated_at" timestamp default current_timestamp,                                                           --> marca temporal de última actualización
 
   constraint fk_admin_divisions_country 
     foreign key (country_id) references geo_countries(id) 
@@ -41,29 +51,8 @@ create table geo_administrative_divisions
     unique (country_id, parent_id, code)
 );
 
-create table geo_cities (
-  "id" uuid primary key default gen_random_uuid(),                   --> ID único
-  "country_id" uuid not null,                                        --> referencia directa al país
-  "division_id" uuid,                                                --> división administrativa más específica
-  "name" varchar(255) not null,                                      --> nombre de la ciudad
-  "type" varchar(50) default 'city',                                 --> 'city', 'municipality', 'town', 'village', etc.
-  "postal_code" varchar(20),                                         --> código postal principal
-  "latitude" decimal(10, 8),                                         --> coordenadas geográficas
-  "longitude" decimal(11, 8),                                        --> coordenadas geográficas
-  "population" integer,                                              --> población aproximada
-  "is_capital_level" integer,                                        --> nivel de capital (1=nacional, 2=estatal, 3=provincial, etc.)
-  "is_active" boolean default true,
-  "created_at" timestamp default current_timestamp,
-  "updated_at" timestamp default current_timestamp,
-
-  constraint fk_cities_country 
-    foreign key (country_id) references geo_countries(id) 
-    on delete cascade on update cascade,
-      
-  constraint fk_cities_division 
-    foreign key (division_id) references geo_administrative_divisions(id) 
-    on delete set null on update cascade
-);
+-- Las ciudades/municipios se almacenan en geo_administrative_divisions
+-- con sus respectivos niveles jerárquicos
 
 create type user_status as enum('active', 'inactive', 'blocked', 'banned');
 create type user_role as enum('admin', 'collaborator', 'user');
@@ -102,7 +91,7 @@ create table users
   "birthdate" date not null,                                              --> Fecha de nacimiento
   "height" integer not null,                                              --> Altura en cm
   "weight" integer not null,                                              --> Peso en kg
-  "city_id" uuid not null references geo_cities("id"),                    --> Ciudad de residencia
+  "city_id" uuid not null references geo_administrative_divisions("id"),   --> Ciudad/municipio de residencia
   "nationality" uuid not null references geo_countries("id"),             --> Nacionalidad
   "jwt_secret" uuid not null default gen_random_uuid(),                   --> Secreto único para invalidar tokens JWT
   "password_hash" text not null,                                          --> Hash de la contraseña
@@ -134,7 +123,7 @@ create table teams
   "gender" team_gender not null,                                          --> Género del equipo (M=masculino, F=femenino, X=mixto)
   "slug" varchar(100) not null unique,                                    --> Slug para URLs amigables
   "description" text,                                                     --> Descripción del equipo
-  "city_id" uuid references geo_cities("id"),                             --> Ciudad de origen del equipo
+  "city_id" uuid references geo_administrative_divisions("id"),          --> Ciudad de origen del equipo
   "country_id" uuid references geo_countries("id"),                      --> País de origen del equipo
   "seo_title" varchar(70),                                                --> Título SEO
   "seo_description" varchar(160),                                         --> Descripción SEO
@@ -177,7 +166,7 @@ create table gyms
   "email" email not null,                                                    --> Correo de contacto
   "social_networks" jsonb not null default '{}'::jsonb,                      --> Redes sociales del gimnasio en formato JSON
   "address" varchar(100) not null,                                           --> Dirección del gimnasio
-  "city_id" uuid not null references geo_cities("id"),                       --> Ciudad donde se encuentra el gimnasio
+  "city_id" uuid not null references geo_administrative_divisions("id"),      --> Ciudad donde se encuentra el gimnasio
   "slug" varchar(100) not null,                                              --> Slug del gimnasio
   "url_google_maps" varchar(200) not null,                                   --> URL de Google Maps
   "geo_latitude" numeric(9,6) not null,                                      --> Latitud geográfica
@@ -322,7 +311,7 @@ create table competitions
   "status" text not null,                                                           --> Estado de la competencia (draft, announced, registration_open, registration_closed, ongoing, completed, cancelled)
   "name" varchar(100) not null unique,                                              --> Nombre de la competencia
   "description" varchar(500) not null,                                              --> Descripción detallada de la competencia
-  "city_id" uuid not null references geo_cities("id"),                              --> Ciudad donde se realiza la competencia
+  "city_id" uuid not null references geo_administrative_divisions("id"),           --> Ciudad donde se realiza la competencia
   "slug" varchar(100) not null unique,                                              --> Slug para URLs amigables
   "cellphone" cellphone not null,                                                   --> Número de contacto
   "email" email not null,                                                           --> Correo de contacto
@@ -347,7 +336,7 @@ create table competition_editions
   "end_date" date not null,                                                        --> Fecha de finalización de la competencia
   "registration_open_date" date not null,                                          --> Fecha de apertura de inscripciones
   "registration_close_date" date not null,                                         --> Fecha de cierre de inscripciones
-  "city_id" uuid not null references geo_cities("id")                              --> Ciudad donde se realiza la competencia
+  "city_id" uuid not null references geo_administrative_divisions("id")           --> Ciudad donde se realiza la competencia
 );
 create index idx_competition_editions_competition_year on competition_editions(competition_id, year);
 
