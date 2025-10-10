@@ -21,7 +21,7 @@ create table geo_administrative_divisions
   "id" uuid primary key default gen_random_uuid(),
   "country_id" uuid not null,
   "parent_id" uuid,                                                  --> permite jerarquía multinivel
-  "code" varchar(20),                                                --> código de la división
+  "code" varchar(20) unique,                                         --> código de la división
   "name" varchar(255) not null,                                      --> nombre en idioma local
   "level" integer not null,                                          --> nivel jerárquico (1=estado, 2=provincia, 3=condado, etc.)
   "type" varchar(50) not null,                                       --> 'state', 'department', 'province', 'county', 'district', etc.
