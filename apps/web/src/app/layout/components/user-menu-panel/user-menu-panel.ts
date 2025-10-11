@@ -3,12 +3,14 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { AuthSession } from '../../../auth';
 import { NzDrawerRef } from 'ng-zorro-antd/drawer';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-menu-panel',
   imports: [
     NzButtonModule,
-    NzModalModule
+    NzModalModule,
+    RouterLink
   ],
   templateUrl: './user-menu-panel.html',
   styleUrl: './user-menu-panel.scss',
@@ -18,7 +20,12 @@ export class UserMenuPanel {
   private readonly _nzDrawerRef = inject(NzDrawerRef<UserMenuPanel>);
   private readonly _nzModalService = inject(NzModalService);
   private readonly _authSession = inject(AuthSession);
-  logout(): void {
+
+  protected closeDrawer(): void {
+    this._nzDrawerRef.close();
+  }
+  
+  protected logout(): void {
     this._nzModalService.confirm({
       nzTitle: '¿Estás seguro que deseas cerrar sesión?',
       nzOkText: 'Cerrar sesión',

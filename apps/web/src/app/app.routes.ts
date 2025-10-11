@@ -7,5 +7,8 @@ export const appRoutes: Route[] = [
   {
     path: '',
     loadComponent: () => import('./layout/layout').then((c) => c.Layout ),
+    children: [
+      { path: 'mi-perfil', loadComponent: () => import('./pages/profile-page/profile-page').then((c) => c.ProfilePage) }
+    ]
   }
 ];
