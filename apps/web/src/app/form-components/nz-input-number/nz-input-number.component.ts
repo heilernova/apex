@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Component, effect, ElementRef, EventEmitter, forwardRef, inject, input, Input, Output } from '@angular/core';
+import { AfterViewChecked, Component, effect, ElementRef, EventEmitter, forwardRef, inject, input, Input, OnInit, Output, signal } from '@angular/core';
 import { AbstractControlDirective, ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { IMaskModule } from 'angular-imask';
@@ -18,13 +18,15 @@ import { FocusMonitor } from '@angular/cdk/a11y';
   ],
   templateUrl: './nz-input-number.component.html',
   styleUrl: './nz-input-number.component.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NzInputNumber), multi: true }],
+  providers: [],
   host: {
     "class": "ant-input",
-    '[class.ant-input-number-focused]': 'isFocused'
+    '[class.ant-input-number-focused]': 'isFocused',
+    '[class.ant-input-disabled]': 'disable',
+    '[class.ant-input-status-error]': 'invalid()'
   }
 })
-export class NzInputNumber implements ControlValueAccessor {
+export class NzInputNumber implements ControlValueAccessor, OnInit {
   private readonly _elementRef = inject(ElementRef<HTMLElement>);
   private readonly _focusMonitor = inject(FocusMonitor);
 
@@ -34,7 +36,7 @@ export class NzInputNumber implements ControlValueAccessor {
   isFocused = false;
   public disable = false;
   public stateChanges = new Subject<void>();
-  public ngControl: NgControl | AbstractControlDirective | null = null;
+  public ngControl: NgControl | null = inject(NgControl, { optional: true });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public onChange = (_: number) => {};
   public onTouched = () => {};
@@ -44,8 +46,15 @@ export class NzInputNumber implements ControlValueAccessor {
   public readonly readOnly = input<boolean>(false);
   @Output() valueChange = new EventEmitter<number>();
 
+  public readonly invalid = signal<boolean>(false);
+
   constructor(){
+    if (this.ngControl){
+      this.ngControl.valueAccessor = this;
+    }
+    
     if (this._platform.isBrowser){
+      
       this.mask = { 
         mask: Number,  // enable number mask
         // other options are optional with defaults below
@@ -58,6 +67,7 @@ export class NzInputNumber implements ControlValueAccessor {
         autofix: true,
       };
     }
+
 
     effect(() => {
       const decimals = this.decimals();
@@ -76,6 +86,14 @@ export class NzInputNumber implements ControlValueAccessor {
       }
     })
   }
+
+  ngOnInit(): void {
+     this.ngControl?.statusChanges?.subscribe(() => {
+      const isInvalid = this.ngControl?.invalid && this.ngControl.dirty;
+      this.invalid.set(isInvalid ?? false);
+    });
+  }
+
 
   private _inputValue = '0'
   public set inputValue(value: string){

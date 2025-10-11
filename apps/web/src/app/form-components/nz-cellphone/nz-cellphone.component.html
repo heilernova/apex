@@ -1,1 +1,9 @@
-<input  [imask]="mask" [(ngModel)]="inputValue" (focus)="onFocus()" (blur)="onBlur()" [readOnly]="readOnly()" [disabled]="disable">
+<input  
+  [imask]="mask" 
+  [(ngModel)]="inputValue" 
+  (focus)="onFocus()" 
+  (blur)="onBlur()" 
+  [readOnly]="readOnly()" 
+  [disabled]="disable"
+  autocomplete="tel"
+  type="tel">

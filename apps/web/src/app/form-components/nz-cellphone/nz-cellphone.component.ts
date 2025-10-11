@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { Platform } from '@angular/cdk/platform';
-import { Component, ElementRef, EventEmitter, forwardRef, inject, input, Input, output, Output } from '@angular/core';
-import { AbstractControlDirective, FormsModule, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, inject, input, Input, OnInit, output, Output, signal } from '@angular/core';
+import { ControlValueAccessor, NgControl, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { IMaskModule } from 'angular-imask';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { Subject } from 'rxjs';
@@ -17,14 +17,15 @@ import { Subject } from 'rxjs';
   ],
   templateUrl: './nz-cellphone.component.html',
   styleUrl: './nz-cellphone.component.scss',
-  providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NzCellphone), multi: true }],
   host: {
     "class": "ant-input",
     '[class.ant-input-disabled]': 'disable',
-    '[class.ant-input-number-focused]': 'isFocused'
+    '[class.ant-input-number-focused]': 'isFocused',
+    '[class.ant-input-status-error]': 'invalid()'
   }
 })
-export class NzCellphone {
+export class NzCellphone implements OnInit, ControlValueAccessor {
+  
   private readonly _elementRef = inject(ElementRef<HTMLElement>);
   private readonly _focusMonitor = inject(FocusMonitor);
   
@@ -34,19 +35,29 @@ export class NzCellphone {
   isFocused = false;
   public disable = false;
   public stateChanges = new Subject<void>();
-  public ngControl: NgControl | AbstractControlDirective | null = null;
+  
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   public onChange = (_: any) => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public onTouched = () => {};
   public empty = true;
   public readonly readOnly = input<boolean>(false);
+  
+  public readonly invalid = signal<boolean>(false);
+  
+  public ngControl: NgControl | null = inject(NgControl, { self: true, optional: true });
 
   @Output() valueChange = new EventEmitter<number>();
 
-  // 
-
-  constructor(){
+  constructor() {
+    if (this.ngControl){
+      this.ngControl.valueAccessor = this;
+      const existingValidator = this.ngControl.control?.validator ? [this.ngControl.control.validator] : [];
+      console.log(this.ngControl.control?.validator);
+      this.ngControl.control?.setValidators([...existingValidator, phoneValidator]);
+      this.ngControl.control?.updateValueAndValidity();
+    }
+  
     if (this._platform.isBrowser){
       this.mask = { 
         mask: "(000) 000-0000",  // enable number mask
@@ -54,10 +65,34 @@ export class NzCellphone {
       };
     }
   }  
+  ngOnInit(): void {
+    this.ngControl?.statusChanges?.subscribe(() => {
+      const isInvalid = this.ngControl?.invalid && this.ngControl.dirty;
+      this.invalid.set(isInvalid ?? false);
+    })
+  }
+
+
+  // validate(control: AbstractControl): ValidationErrors | null {
+  //   if (!control.value) return null;
+
+  //   const errors: ValidationErrors = {};
+
+  //   // Validación específica para teléfonos colombianos
+  //   const phoneRegex = /^\+57 \d{3} \d{3} \d{4}$/;
+  //   if (!phoneRegex.test(control.value)) {
+  //     errors['invalidPhone'] = { 
+  //       message: 'Debe ser un número de teléfono colombiano válido (+57 XXX XXX XXXX)',
+  //       actualValue: control.value 
+  //     };
+  //   }
+  //   const keys = Object.keys(errors);
+  //   this.invalid.set(keys.length > 0 ? true : false);
+  //   return keys.length ? errors : null;
+  // }
 
   private _inputValue = '';
   public set inputValue(value: string){
-    // const temp: string = value;
     this._inputValue = value;
     this.value = value;
   }
@@ -89,6 +124,7 @@ export class NzCellphone {
     this._inputValue = "";
     return;
   }
+
   public registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -115,3 +151,19 @@ export class NzCellphone {
   // eslint-disable-next-line @angular-eslint/no-output-native
   public focus = output<void>();
 }
+
+
+export const  phoneValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  if (!control.value) return null;
+  
+  const phoneRegex = /^\+57 \d{3} \d{3} \d{4}$/;
+  if (!phoneRegex.test(control.value)) {
+    return {
+      invalidPhone: {
+        message: 'Debe ser un número de teléfono colombiano válido (+57 XXX XXX XXXX)',
+        actualValue: control.value
+      }
+    };
+  }
+  return null;
+};
