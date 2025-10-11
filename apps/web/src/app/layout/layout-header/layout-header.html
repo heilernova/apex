@@ -3,14 +3,17 @@
     APEX
   </div>
   <nav>
-    <a>Ejercicios</a>
-    <a>Workouts</a>
-    <a>Gimnasios</a>
-    <a>Comunidad</a>
-    <a>Competencias</a>
+    @for (item of navigationLinks(); track $index) {
+      <a [routerLink]="item.path">{{ item.label }}</a>
+    }
   </nav>
   <div class="access-controls">
-    <a nz-button routerLink="/login">Iniciar sesión</a>
-    <button nz-button nzType="primary" routerLink="/registrarse">Registrarse</button>
+    @let n = name();
+    @if (n) {
+      <button nz-button (click)="openUserMenu()">{{ n }}</button>
+    } @else {
+      <a nz-button routerLink="/login">Iniciar sesión</a>
+      <button nz-button nzType="primary" routerLink="/registrarse">Registrarse</button>
+    }
   </div>
 </div>

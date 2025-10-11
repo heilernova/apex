@@ -8,7 +8,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
-import { GeoData, IGeoCountry, IGeoCountryDivision } from '../../services/geo';
+import { IGeoCountry, IGeoCountryDivision } from '../../services/geo';
 import { CommonModule } from '@angular/common';
 import { NzCellphone } from '../../form-components/nz-cellphone';
 import { NzInputNumber } from '../../form-components/nz-input-number';
