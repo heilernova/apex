@@ -1,5 +1,5 @@
 export const USER_ROLES = ['admin', 'collaborator', 'user'] as const;
-export const ATHLETE_CATEGORIES = ['beginner', 'intermediate', 'advanced', 'rx', 'elite', 'masters', 'teen'] as const;
+export const ATHLETE_CATEGORIES = ['beginner', 'intermediate', 'advanced', 'rx', 'elite', 'master', 'teen'] as const;
 export const JUDGE_LEVELS = ['L1', 'L2', 'L3', 'L4', 'L5'] as const;
 export const USER_GENDERS = ['M', 'F'] as const;
 export const USER_STATUSES = ['active', 'inactive', 'blocked', 'banned'] as const;
