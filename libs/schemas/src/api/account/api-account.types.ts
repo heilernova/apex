@@ -1,4 +1,4 @@
-import { JudgeLevel, UserGender } from '../../types';
+import { AthleteCategory, JudgeLevel, UserGender, UserRole } from '../../types';
 import { ApiResponseBase } from '../api-response';
 
 export interface ApiAccountInfoResponse extends ApiResponseBase {
@@ -9,7 +9,7 @@ export interface ApiAccountInfoResponse extends ApiResponseBase {
     firstName: string;
     lastName: string;
     alias: string | null;
-    sex: UserGender;
+    gender: UserGender;
     birthdate: Date;
     height: number;
     weight: number;
@@ -18,7 +18,8 @@ export interface ApiAccountInfoResponse extends ApiResponseBase {
     permissions: string[];
     isCoach: boolean;
     judgeLevel: JudgeLevel | null;
-    role: string;
+    role: UserRole;
+    category: AthleteCategory;
     verified: boolean;
   }
 }
