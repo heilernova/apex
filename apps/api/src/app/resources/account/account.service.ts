@@ -27,6 +27,7 @@ export class AccountService {
       u.is_coach AS "isCoach",
       u.judge_level AS "judgeLevel",
       u.role,
+      u.category,
       u.verified
     from users u
     where u.id = $1;
@@ -36,7 +37,9 @@ export class AccountService {
     if (!info) {
       throw new HttpException({ message: 'Información del usuario no encontrada' }, 500);
     }
-    return info;
+    return {
+      data: info
+    };
   }
 
   async updateInfo(userId: string, updateData: UpdateAccountDto) {
@@ -87,6 +90,8 @@ export class AccountService {
         }
       });
     }
-    return user.rows[0];
+    return {
+      data: user.rows[0]
+    }
   }
 }
