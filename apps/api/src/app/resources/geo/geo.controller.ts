@@ -19,6 +19,12 @@ export class GeoController {
   }
 
   @Public()
+  @Get('countries/:code/administrative-divisions')
+  public async getAdministrativeDivisionsByCountryCode(@Param('code') code: string) {
+    return this.geoService.getAdministrativeDivisions(code);
+  }
+
+  @Public()
   @Get('countries/:code')
   public async getCountryByCode(code: string) {
     const country = await this.geoService.getCountryByCode(code);

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
-import { isUUID } from 'class-validator';
 
 @Injectable()
 export class GeoRepository {
@@ -64,6 +63,25 @@ export class GeoRepository {
       updated_at as "updatedAt"
     from geo_administrative_divisions where level_id = $1 order by is_capital, name`;
     const result = await this._db.query<IGeoDivision>(sql, [id]);
+    return result.rows;
+  }
+
+  public async getAdministrativeDivisionsByCountryCode(countryCode: string): Promise<IGeoDivision[]> {
+    const sql = `select 
+      gad.id,
+      gad.country_code as "countryCode",
+      gad.level_id as "levelId",
+      gad.parent_id as "parentId",
+      gad.code,
+      gad.name,
+      gad.is_capital as "isCapital",
+      gad.is_active as "isActive",
+      gad.created_at as "createdAt",
+      gad.updated_at as "updatedAt"
+    from geo_administrative_divisions gad
+    where gad.country_code = $1
+    order by gad.is_capital desc, gad.name`;
+    const result = await this._db.query<IGeoDivision>(sql, [countryCode.toUpperCase()]);
     return result.rows;
   }
 

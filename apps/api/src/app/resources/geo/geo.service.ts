@@ -44,4 +44,11 @@ export class GeoService {
       data: result,
     };
   }
+
+  public async getAdministrativeDivisions(countryCode: string) {
+    const divisions = await this._geoRepository.getAdministrativeDivisionsByCountryCode(countryCode);
+    return {
+      data: divisions,
+    }
+  }
 }
