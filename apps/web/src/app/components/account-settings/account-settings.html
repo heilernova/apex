@@ -1,0 +1,24 @@
+<form nz-form nzLayout="vertical" [formGroup]="formGroup">
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true">Correo electrónico</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor ingrese un correo electrónico válido">
+      <input nz-input formControlName="email" type="email" autocomplete="email" />
+    </nz-form-control>
+  </nz-form-item>
+          
+  <div style="display: flex; column-gap: 1rem;">
+    <nz-form-item style="width: 20rem;">
+      <nz-form-label [nzRequired]="true">Usuario</nz-form-label>
+      <nz-form-control nzErrorTip="Por favor ingrese un nombre de usuario válido">
+        <input nz-input formControlName="username" type="text" autocomplete="username" />
+      </nz-form-control>
+    </nz-form-item>
+    <!-- Teléfono celular -->
+    <nz-form-item style="width: 17rem;">
+      <nz-form-label [nzRequired]="true">Teléfono móvil</nz-form-label>
+      <nz-form-control nzErrorTip="Teléfono invalido">
+        <nz-cellphone formControlName="cellphone"/>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</form>

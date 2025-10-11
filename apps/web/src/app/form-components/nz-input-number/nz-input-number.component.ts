@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { AfterViewChecked, Component, effect, ElementRef, EventEmitter, forwardRef, inject, input, Input, OnInit, Output, signal } from '@angular/core';
-import { AbstractControlDirective, ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { Component, effect, ElementRef, EventEmitter, inject, input, Input, OnInit, Output, signal } from '@angular/core';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { IMaskModule } from 'angular-imask';
 import { Subject } from 'rxjs';
@@ -22,7 +22,7 @@ import { FocusMonitor } from '@angular/cdk/a11y';
   host: {
     "class": "ant-input",
     '[class.ant-input-number-focused]': 'isFocused',
-    '[class.ant-input-disabled]': 'disable',
+    '[class.ant-input-disabled]': 'disable()',
     '[class.ant-input-status-error]': 'invalid()'
   }
 })
@@ -34,7 +34,7 @@ export class NzInputNumber implements ControlValueAccessor, OnInit {
   public mask: Record<string, unknown> | undefined = undefined;
   private _value = 0;
   isFocused = false;
-  public disable = false;
+  public disable = signal<boolean>(false);
   public stateChanges = new Subject<void>();
   public ngControl: NgControl | null = inject(NgControl, { optional: true });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -138,7 +138,7 @@ export class NzInputNumber implements ControlValueAccessor, OnInit {
   }
 
   public setDisabledState?(isDisabled: boolean): void {
-    this.disable = isDisabled;
+    this.disable.set(isDisabled);
   }
 
 

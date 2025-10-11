@@ -3,12 +3,16 @@ import { inject } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { catchError, map, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthSession } from '../../auth';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const url = `${environment.api.baseUrl}${req.url}`;
   const nzMessage = inject(NzMessageService);
+  const session = inject(AuthSession);
+  const accessToken = session.getData()?.accessToken;
   req = req.clone({
-    url
+    url,
+    headers: accessToken ? req.headers.append('authorization', `Bearer ${accessToken}`) : undefined
   });
   return next(req).pipe(
     map(event => {

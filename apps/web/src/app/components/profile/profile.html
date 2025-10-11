@@ -1,0 +1,99 @@
+  <form nz-form nzLayout="vertical" [formGroup]="formGroup">
+    <div class="form-inputs">
+      <!-- Información personal -->
+      <section class="form-section-personal">
+        <div>
+          <!-- Nombres y apellidos -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <nz-form-item>
+              <nz-form-label [nzRequired]="true">Nombres</nz-form-label>
+              <nz-form-control nzErrorTip="Por favor ingrese su nombre completo" nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <input nz-input type="text" autocomplete="given-name" class="capitalize"  formControlName="firstName"/>
+              </nz-form-control>
+            </nz-form-item>
+  
+  
+            <nz-form-item>
+              <nz-form-label [nzRequired]="true">Apellido</nz-form-label>
+              <nz-form-control nzErrorTip="Por favor ingrese sus apellidos" nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <input nz-input type="text" autocomplete="family-name" class="capitalize" formControlName="lastName"/>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <nz-form-item>
+            <nz-form-label>Alias / Nombre como quieras que te llamen ( Opcional )</nz-form-label>
+            <nz-form-control nzErrorTip="Por favor ingrese un alias válido" nzValidateStatus="validating" [nzHasFeedback]="loading()">
+              <input nz-input type="text" autocomplete="nickname" class="capitalize" formControlName="alias"/>
+            </nz-form-control>
+          </nz-form-item>
+
+
+          <div style="display: flex; flex-wrap: wrap; column-gap: 1rem;">
+            
+            <!-- <nz-form-item style="width: 18rem;">
+              <nz-form-label [nzRequired]="true">País de origen o nacionalidad</nz-form-label>
+                <nz-form-control>
+                  <nz-select nzShowSearch formControlName="nationality">
+                    @for (item of nationalityOptions(); track $index) {
+                      <nz-option [nzLabel]="item.name" [nzValue]="item.code" />
+                    }
+                  </nz-select>
+                </nz-form-control>
+            </nz-form-item> -->
+
+            <nz-form-item style="width: 13rem;">
+              <nz-form-label [nzRequired]="true">Fecha de nacimiento</nz-form-label>
+              <nz-form-control nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <nz-date-picker style="width: 100%;" nzFormat="dd/MM/yyyy" nzPlaceHolder="Selecciona una fecha" formControlName="birthdate" [nzAllowClear]="false"></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item style="width: 7rem;">
+              <nz-form-label [nzRequired]="true">Genero</nz-form-label>
+              <nz-form-control nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <nz-select formControlName="gender">
+                  <nz-option nzLabel="Masculino" nzValue="M" />
+                  <nz-option nzLabel="Femenino" nzValue="F" />
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item style="width: 6.6rem;">
+              <nz-form-label [nzRequired]="true">Altura (cm)</nz-form-label>
+              <nz-form-control nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <nz-input-number formControlName="height"/>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item style="width: 6.5rem;">
+              <nz-form-label [nzRequired]="true">Peso (kg)</nz-form-label>
+              <nz-form-control nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                <nz-input-number formControlName="weight"/>
+              </nz-form-control>
+            </nz-form-item>
+            
+            <nz-form-item style="width: 9rem;">
+                <nz-form-label [nzRequired]="true">Categoría</nz-form-label>
+                <nz-form-control nzValidateStatus="validating" [nzHasFeedback]="loading()">
+                  <nz-select formControlName="category">
+                    <nz-option nzLabel="Principiante" nzValue="beginner" />
+                    <nz-option nzLabel="Intermedio" nzValue="intermediate" />
+                    <nz-option nzLabel="Avanzado" nzValue="advanced" />
+                    <nz-option nzLabel="RX" nzValue="rx" />
+                    <nz-option nzLabel="Élite" nzValue="elite" />
+                    <nz-option nzLabel="Máster" nzValue="master" />
+                    <nz-option nzLabel="Femenino" nzValue="teen" />
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+          </div>
+
+        </div>
+      </section>
+    </div>
+    <!-- <div class="form-actions"> 
+      <button nz-button nzType="primary">Crear cuenta</button>
+      <button nz-button nzType="link" routerLink="/login">Iniciar sesión</button>
+    </div> -->
+  </form>
