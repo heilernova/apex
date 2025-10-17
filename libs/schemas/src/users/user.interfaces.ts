@@ -1,5 +1,5 @@
 import { OmitBy, PartialBy } from '@app/shared';
-import { JudgeLevel } from '../common';
+import { AthleteCategory, JudgeLevel } from '../common';
 import { UserGender, UserRole, UserStatus } from './user.types';
 
 export interface IUser {
@@ -29,6 +29,7 @@ export interface IUser {
   age: number;
   height: number;
   weight: number;
+  category: AthleteCategory;
   nationality: string;
   location: {
     id: string;
