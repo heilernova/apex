@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "homepage": "https://apex.novah.dev",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
+  },
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "~20.3.0",
@@ -27,6 +30,8 @@
     "@angular/cli": "~20.3.0",
     "@angular/compiler-cli": "~20.3.0",
     "@angular/language-service": "~20.3.0",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@eslint/js": "^9.8.0",
     "@nx/angular": "21.6.5",
     "@nx/eslint": "21.6.5",
@@ -47,6 +52,7 @@
     "angular-eslint": "^20.3.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "nx": "21.6.5",
