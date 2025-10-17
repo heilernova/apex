@@ -576,7 +576,6 @@ select
   u.role,
   u.is_coach as "isCoach",
   u.judge_level as "judgeLevel",
-  u.verified,
   jsonb_build_object(
     'address', u.email_address,
     'verified', u.email_verified
@@ -590,11 +589,12 @@ select
   u.first_name as "firstName",
   u.last_name as "lastName",
   u.gender,
-  u.birthdate
+  u.birthdate,
   extract(year from age(u.birthdate))::int as "age",
   u.height,
   u.weight,
   u.nationality,
+  u.category,
   jsonb_build_object(
     'id', u.location_id,
     'name', b.name
