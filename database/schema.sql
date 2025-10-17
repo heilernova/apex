@@ -76,9 +76,9 @@ create table users
   "judge_level" judge_level default null,                                       --> Nivel de juez (null = no es juez, valor = es juez con ese nivel)
   "verified" boolean not null default false,                                    --> Indica si el usuario ha verificado su cuenta
   "category" athlete_category not null default 'beginner',                      --> Categoría del atleta
-  "email" email not null unique,                                                --> Correo electrónico
+  "email_address" email not null unique,                                        --> Correo electrónico
   "email_verified" boolean not null default false,                              --> Indica si el correo electrónico ha sido verificado
-  "cellphone" cellphone not null,                                               --> Número de teléfono celular
+  "cellphone_number" cellphone not null,                                        --> Número de teléfono celular
   "cellphone_verified" boolean not null default false,                          --> Indica si el celular ha sido verificado
   "username" username not null unique,                                          --> Nombre de usuario sin espacios ni caracteres especiales
   "alias" varchar(40) default null,                                             --> Nombre para mostrar
