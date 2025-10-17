@@ -302,14 +302,17 @@ create table workouts
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación de la rutina
   "updated_at" timestamp with time zone default now(),                                 --> Fecha y hora de la última actualización de la rutina
   "published" boolean not null default false,                                          --> Indica si la rutina está publicada
+  "editable " boolean not null default true,                                           --> Indica si la rutina es editable por otros usuarios
   "gym_id" uuid references gyms("id"),                                                 --> ID del gimnasio (opcional)
   "name" varchar(100) not null unique,                                                 --> Nombre de la rutina
-  "description" varchar(500) not null,                                                 --> Descripción detallada de la rutina
+  "slug" varchar(100) not null unique,                                                 --> Slug para URLs amigables
+  "description" varchar(200) not null,                                                 --> Descripción detallada de la rutina
   "type" workout_type not null,                                                        --> Tipo de rutina (AMRAP, EMOM, RFT, TABATA, BENCHMARK, FOR_TIME, STRENGTH, CHIPPER, LADDER)
   "time_cap" interval,                                                                 --> límite de tiempo en horas o minutos (opcional)
+  "difficulty" number not null default 1,
+  "disciplines" text[] not null default array[]::text[],                               --> Disciplina de la rutina (ej: crossfit, weightlifting, gymnastics, etc.)
   "score_order" varchar(4) not null check (score_order in ('asc', 'desc')),            --> orden de puntuación (ascendente o descendente)
-  "exercises" jsonb not null,                                                          --> lista de ejercicios en formato JSON
-  "slug" varchar(100) not null unique,                                                 --> Slug para URLs amigables
+  "content" jsonb not null default '{}'::jsonb,                                        --> lista de ejercicios en formato JSON
   "seo_title" varchar(70),                                                             --> Título SEO
   "seo_description" varchar(160),                                                      --> Descripción SEO
   "seo_keywords" text[] not null default array[]::text[],                              --> Palabras clave SEO
@@ -696,7 +699,9 @@ select
   w.type,
   w.time_cap as "timeCap",
   w.score_order as "scoreOrder",
-  w.exercises,
+  w.difficulty,
+  w.disciplines,
+  w.content,
   w.slug,
   jsonb_build_object(
     'title', w.seo_title,
