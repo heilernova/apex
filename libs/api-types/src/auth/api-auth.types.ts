@@ -1,4 +1,5 @@
-import { UserRole } from '@app/schemas/users';
+import { AthleteCategory } from '@app/schemas/common';
+import { UserGender, UserRole } from '@app/schemas/users';
 
 export interface LoginRequestBody {
   username: string;
@@ -31,4 +32,23 @@ export interface RefreshTokenResponseBody {
 
 export interface VerifySessionResponse {
   data: AccessData | null;
+}
+
+export interface RegisterRequestBody {
+  email: string
+  username: string;
+  cellphone: string;
+  password: string;
+
+  firstName: string;
+  lastName: string;
+  alias?: string | null;
+  gender: UserGender;
+  birthdate: string; // ISO date string
+  height: number; // in cm
+  weight: number; // in kg
+  nationality: string;
+
+  locationId: string;
+  category: AthleteCategory;
 }
