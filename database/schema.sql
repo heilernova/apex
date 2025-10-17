@@ -31,7 +31,7 @@ create table geo_administrative_divisions
   "country_code" char(2) not null,
   "level_id" uuid not null references geo_administrative_levels(id) on delete cascade on update cascade,
   "parent_id" uuid,                                                                                           --> permite jerarquía multinivel
-  "code" varchar(20) unique,                                                                                  --> código de la división
+  "code" varchar(20),                                                                                         --> código de la división
   "name" varchar(50) not null,                                                                                --> nombre
   "is_city" boolean default false,                                                                            --> indica si es ciudad
   "is_capital" boolean default false,                                                                         --> indica si es capital de la división padre
