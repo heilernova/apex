@@ -566,6 +566,61 @@ create table competition_leaderboard_teams
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -- Vistas para la API
 
+create view vi_users_api as
+select
+  u.id,
+  u.created_at as "createdAt",
+  u.updated_at as "updatedAt",
+  u.last_login_at as "lastLoginAt",
+  u.verified,
+  u.role,
+  u.is_coach as "isCoach",
+  u.judge_level as "judgeLevel",
+  u.verified,
+  jsonb_build_object(
+    'address', u.email_address,
+    'verified', u.email_verified
+  ) as "email",
+  jsonb_build_object(
+    'number', u.cellphone_number,
+    'verified', u.cellphone_verified
+  ) as "cellphone",
+  u.username,
+  u.alias,
+  u.first_name as "firstName",
+  u.last_name as "lastName",
+  u.gender,
+  u.birthdate
+  extract(year from age(u.birthdate))::int as "age",
+  u.height,
+  u.weight,
+  u.nationality,
+  jsonb_build_object(
+    'id', u.location_id,
+    'name', b.name
+  ) as "location",
+  u.disciplines,
+  u.social_media as "socialMedia",
+  u.avatar,
+  u.cover,
+  u.athlete_photo as "athletePhoto",
+  case
+    when g.id is not null then
+      jsonb_build_object(
+        'id', g.id,
+        'name', g.name,
+        'role', g.role,
+        'slug', g.slug,
+        'status', g.status,
+        'joinedDate', g.joined_date
+      )
+    else
+      null
+  end as "gym"
+from users u
+inner join geo_administrative_divisions b on b.id = u.location_id
+left join vi_gym_members g on g.user_id = u.id;
+
 create view vi_athletes_api as
 select
   u.id,
