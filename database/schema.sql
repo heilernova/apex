@@ -309,7 +309,7 @@ create table workouts
   "description" varchar(200) not null,                                                 --> Descripción detallada de la rutina
   "type" workout_type not null,                                                        --> Tipo de rutina (AMRAP, EMOM, RFT, TABATA, BENCHMARK, FOR_TIME, STRENGTH, CHIPPER, LADDER)
   "time_cap" interval,                                                                 --> límite de tiempo en horas o minutos (opcional)
-  "difficulty" number not null default 1,
+  "difficulty" integer not null default 1,
   "disciplines" text[] not null default array[]::text[],                               --> Disciplina de la rutina (ej: crossfit, weightlifting, gymnastics, etc.)
   "score_order" varchar(4) not null check (score_order in ('asc', 'desc')),            --> orden de puntuación (ascendente o descendente)
   "content" jsonb not null default '{}'::jsonb,                                        --> lista de ejercicios en formato JSON
