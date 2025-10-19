@@ -41,6 +41,8 @@ export default [
       '**/*.mjs',
     ],
     // Override or add rules here
-    rules: {},
+    rules: {
+      'eol-last': ['error', 'always'], // Requiere salto de línea al final
+    },
   },
 ];
