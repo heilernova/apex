@@ -577,6 +577,7 @@ select
   u.last_login_at as "lastLoginAt",
   u.verified,
   u.role,
+  u.status,
   u.is_coach as "isCoach",
   u.judge_level as "judgeLevel",
   jsonb_build_object(
@@ -587,6 +588,8 @@ select
     'number', u.cellphone_number,
     'verified', u.cellphone_verified
   ) as "cellphone",
+  u.jwt_secret as "jwtSecret",
+  u.password_hash as "passwordHash",
   u.username,
   u.alias,
   u.first_name as "firstName",
