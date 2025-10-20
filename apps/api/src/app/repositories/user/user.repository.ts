@@ -156,6 +156,16 @@ export class UserRepository extends BaseRepository {
       conditionParams: [id],
     });
 
+    if (data.weight) {
+      await this._db.insert({
+        table: 'user_weights',
+        data: {
+          user_id: id,
+          weight: data.weight
+        },
+      });
+    }
+
     return result.rowCount === 1;
   }
 
