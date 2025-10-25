@@ -92,8 +92,9 @@ create table users
   "nationality" char(2) not null references geo_countries("code"),              --> Nacionalidad
   "disciplines" text[] not null default array[]::text[],                        --> Disciplinas practicadas
   "jwt_secret" uuid not null default gen_random_uuid(),                         --> Secreto único para invalidar tokens JWT
-  "social_media" jsonb not null default '{}'::jsonb,                            --> Redes sociales del usuario en formato JSON
+  "session_key" uuid not null default gen_random_uuid(),                        --> Clave de sesión para validar e invalidar sesiones
   "password_hash" text not null,                                                --> Hash de la contraseña
+  "social_media" jsonb not null default '{}'::jsonb,                            --> Redes sociales del usuario en formato JSON
   "permissions" text[] not null default array[]::text[],                        --> Permisos adicionales
   "avatar" varchar(500) default null,                                           --> URL de avatar/cara
   "cover" varchar(500) default null,                                            --> imagen de banner del perfil
