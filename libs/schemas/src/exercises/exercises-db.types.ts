@@ -35,6 +35,9 @@ export type ExercisesDbInsert = PartialBy<OmitBy<
   | 'seo_keywords'
   | 'seo_open_graph_images'
   | 'images'
+  | 'published'
+  | 'allowed_rm_types'
+  | 'description'
 >;
 
 export type ExercisesDbUpdate = Partial<OmitBy<ExercisesDb, 'id' | 'created_at'>>;
