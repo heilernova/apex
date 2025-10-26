@@ -31,6 +31,7 @@ export interface UserDb {
   jwt_secret: string;
   social_media: { [key: string]: string };
   password_hash: string;
+  session_key: string;
   permissions: string[];
   avatar: string | null;
   cover: string | null;
@@ -54,6 +55,7 @@ export type NewUserDb = PartialBy<OmitBy<UserDb, 'created_at'  | 'updated_at' | 
   | 'permissions'
   | 'status'
   | 'disciplines'
+  | 'session_key'
 >;
 
 export type UpdateUserDb = Partial<OmitBy<UserDb, 'created_at' | 'updated_at' | 'id'>>;
