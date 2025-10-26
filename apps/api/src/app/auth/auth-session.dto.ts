@@ -3,7 +3,7 @@ import { USER_GENDERS, USER_ROLES, UserGender, UserRole } from '@app/schemas/use
 import { JUDGE_LEVELS, JudgeLevel } from '@app/schemas/common';
 import { JwtPayload } from './auth.interfaces';
 
-export class AuthSessionDto implements JwtPayload {
+export class SessionDto implements JwtPayload {
   @IsUUID()
   public readonly id!: string;
 

@@ -1,7 +1,7 @@
 import { SetMetadata } from '@nestjs/common';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { UserRole } from '@app/schemas/users';
-import { AuthSession } from './auth-session';
+import { Session } from './auth-session';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 export const ROLES_KEY = 'roles';
@@ -22,10 +22,10 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
  * Decorador para obtener la sesión actual desde el request
  */
 export const CurrentSession = createParamDecorator(
-  (data: keyof AuthSession | undefined, ctx: ExecutionContext): AuthSession => {
+  (data: keyof Session | undefined, ctx: ExecutionContext): Session => {
     const request = ctx.switchToHttp().getRequest();
     const session = request.session;
-    if (session instanceof AuthSession) {
+    if (session instanceof Session) {
       return session;
     }
     

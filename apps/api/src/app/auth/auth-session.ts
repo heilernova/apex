@@ -2,7 +2,7 @@ import { JudgeLevel } from '@app/schemas/common';
 import { UserGender, UserRole } from '@app/schemas/users';
 import { JwtPayload } from './auth.interfaces';
 
-export class AuthSession {
+export class Session {
   public readonly id: string;
   public readonly isCoach: boolean;
   public readonly role: UserRole;

@@ -3,9 +3,9 @@ import { CanActivate, ExecutionContext, ForbiddenException, UnauthorizedExceptio
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Validator } from 'class-validator';
-import { AuthSession } from './auth-session';
+import { Session } from './auth-session';
 import { IS_PUBLIC_KEY, ROLES_KEY } from './auth.decorator';
-import { AuthSessionDto } from './auth-session.dto';
+import { SessionDto } from './auth-session.dto';
 
 export class AuthGuard implements CanActivate {
   constructor(
@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-    let authSession: AuthSession | null = null;
+    let authSession: Session | null = null;
 
     const isPublic = this._reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -40,10 +40,10 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = await this._jwtService.verifyAsync(token);
       const validator = new Validator();
-      const authSessionDto = new AuthSessionDto();
+      const authSessionDto = new SessionDto();
       Object.assign(authSessionDto, payload);
       validator.validateSync(authSessionDto);
-      authSession = new AuthSession(payload);
+      authSession = new Session(payload);
       request['session'] = authSession
     } catch {
       throw new UnauthorizedException({ message: 'Token de autenticación inválido o expirado' });
