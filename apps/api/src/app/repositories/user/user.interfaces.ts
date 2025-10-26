@@ -21,6 +21,8 @@ export interface IUser {
     verified: boolean;
   };
   jwtSecret: string;
+  sessionKey: string;
+  permissions: string[];
   passwordHash: string;
   username: string;
   firstName: string;
@@ -63,6 +65,10 @@ export interface IUserCreate extends PartialBy<OmitBy<IUser, 'createdAt' | 'upda
   | 'cover'
   | 'athletePhoto'
   | 'disciplines'
+  | 'sessionKey'
+  | 'permissions'
+  | 'status'
+  | 'jwtSecret'
 > {
   email: string;
   cellphone: string;
@@ -76,7 +82,4 @@ export interface IUserUpdate extends Partial<OmitBy<IUser, 'id' | 'createdAt' | 
   cellphone?: string;
   password?: string;
   locationId?: string;
-  jwtSecret?: string;
-  status?: UserStatus;
-  permissions?: string[];
 }

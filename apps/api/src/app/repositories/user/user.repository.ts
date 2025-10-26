@@ -93,7 +93,9 @@ export class UserRepository extends BaseRepository {
       nationality: data.nationality,
       disciplines: data.disciplines,
       password_hash: await hash(data.password),
-      jwt_secret: crypto.randomUUID()
+      jwt_secret: crypto.randomUUID(),
+      session_key: crypto.randomUUID(),
+      permissions: []
     }
 
     const result = await this._db.insert({
@@ -137,6 +139,7 @@ export class UserRepository extends BaseRepository {
       verified: data.verified,
       permissions: data.permissions,
       social_media: data.socialMedia,
+      session_key: data.sessionKey,
     };
 
     if (data.email) {
