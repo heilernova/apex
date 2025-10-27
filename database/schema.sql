@@ -697,6 +697,7 @@ select
   w.created_at as "createdAt",
   w.updated_at as "updatedAt",
   w.published,
+  w.editable,
   w.gym_id as "gymId",
   w.name,
   w.description,
