@@ -11,6 +11,7 @@ export class Session {
   public readonly name: string;
   public readonly gender: UserGender;
   public readonly permissions: string[];
+  public readonly sessionKey: string;
 
   constructor(data: JwtPayload) {
     this.id = data.id;
@@ -21,5 +22,6 @@ export class Session {
     this.name = data.name;
     this.gender = data.gender;
     this.permissions = data.permissions;
+    this.sessionKey = data.sessionKey;
   }
 }

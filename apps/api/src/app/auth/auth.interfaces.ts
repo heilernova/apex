@@ -9,5 +9,10 @@ export interface JwtPayload {
   verified: boolean;
   name: string;
   gender: UserGender;
+  sessionKey: string;
   permissions: string[];
+}
+
+export interface RefreshTokenPayload {
+  sub: string;
 }
