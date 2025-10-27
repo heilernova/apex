@@ -1,4 +1,5 @@
 import { AthleteCategory, JudgeLevel } from "@app/schemas/common";
+import { UserRole } from "@app/schemas/users";
 
 export interface AccountInfo {
   username: string;
@@ -43,4 +44,35 @@ export interface UpdateAccountRequestBody {
 export interface UpdatePasswordRequestBody {
   currentPassword: string;
   newPassword: string;
+}
+
+export interface ApiLoginResponse { 
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    sessionInfo: {
+      name: string;
+      role: UserRole;
+      gender: string;
+      isCoach: boolean;
+      judgeLevel: JudgeLevel | null;
+      permissions: string[];
+      verified: boolean;
+    };
+  };
+}
+export interface ApiRefreshResponse { 
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    sessionInfo: {
+      name: string;
+      role: UserRole;
+      gender: string;
+      isCoach: boolean;
+      judgeLevel: JudgeLevel | null;
+      permissions: string[];
+      verified: boolean;
+    };
+  };
 }
