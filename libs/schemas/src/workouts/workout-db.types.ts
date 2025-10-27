@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { OmitBy, PartialBy } from "@app/shared";
-import { WorkoutContent } from "./workouts.types";
+import { WorkoutContent, WorkoutType } from "./workouts.types";
 
 export interface IWorkoutDb {
   id: string;
@@ -12,7 +12,7 @@ export interface IWorkoutDb {
   name: string;
   slug: string;
   description: string | null;
-  type: WorkerType;
+  type: WorkoutType;
   time_cap: unknown | null; // in seconds
   score_order: 'asc' | 'desc' | null;
   disciplines: string[];
@@ -36,6 +36,7 @@ export interface IWorkoutDbCreate extends PartialBy<OmitBy<IWorkoutDb,'id' | 'cr
   | 'images'
   | 'difficulty'
   | 'disciplines'
+  | 'score_order'
 > {}
 
 export interface  IWorkoutDbUpdate extends Partial<OmitBy<IWorkoutDb, 'id' | 'created_at'>> {}
