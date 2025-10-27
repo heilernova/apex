@@ -591,6 +591,7 @@ select
   ) as "cellphone",
   u.jwt_secret as "jwtSecret",
   u.password_hash as "passwordHash",
+  u.session_key as "sessionKey",
   u.username,
   u.alias,
   u.first_name as "firstName",
