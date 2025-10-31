@@ -4,7 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es2023",
