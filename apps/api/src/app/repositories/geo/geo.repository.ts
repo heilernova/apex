@@ -49,6 +49,24 @@ export class GeoRepository extends BaseRepository {
     return result.rows;
   }
 
+  /** Obtener un país por su código */
+  public async getCountryByCode(code: string): Promise<ICountry | null> {
+    const sql = `
+    select
+      code,
+      name,
+      phone_code as "phoneCode",
+      jsonb_build_object(
+        'masculine', masculine_demonym,
+        'feminine', feminine_demonym
+      ) as demonym
+    from geo_countries
+    where code = $1;
+    `;
+    const result = await this._db.query<ICountry>(sql, [code]);
+    return result.rows[0] || null;
+  }
+
   /** Obtener los niveles administrativos de un país */
   public async getAdministrativeLevels(country: string): Promise<IAdministrativeLevel[]> {
     const sql = `

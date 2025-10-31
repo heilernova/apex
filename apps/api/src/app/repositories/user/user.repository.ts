@@ -213,4 +213,26 @@ export class UserRepository extends BaseRepository {
     });
     return result.rowCount === 1;
   }
+
+  public async existsUsername(username: string, ignoreId?: string): Promise<boolean> {
+    let sql = 'select count(1) as count from users where lower(username) = lower($1)';
+    const params: unknown[] = [username];
+    if (ignoreId) {
+      sql += ' and id <> $2';
+      params.push(ignoreId);
+    }
+    const result = await this._db.query<{ count: number }>(sql, params);
+    return result.rows[0].count > 0;
+  }
+  
+  public async existsEmail(email: string, ignoreId?: string): Promise<boolean> {
+    let sql = 'select count(1) as count from users where lower(email_address) = lower($1)';
+    const params: unknown[] = [email];
+    if (ignoreId) {
+      sql += ' and id <> $2';
+      params.push(ignoreId);
+    }
+    const result = await this._db.query<{ count: number }>(sql, params);
+    return result.rows[0].count > 0;
+  }
 }
