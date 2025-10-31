@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { GeoService } from './geo.service';
-import { Public } from '../auth';
+import { Public } from '../../auth';
 
 @Controller('geo')
 export class GeoController {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GeoRepository } from '../repositories/geo';
+import { GeoRepository } from '../../repositories/geo';
 
 @Injectable()
 export class GeoService {
