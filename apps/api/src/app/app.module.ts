@@ -10,7 +10,7 @@ import { AuthModule } from './resources/auth/auth.module';
 import { AccountModule } from './resources/account/account.module';
 import { UsersModule } from './resources/users/users.module';
 import { ExercisesModule } from './resources/exercises/exercises.module';
-import { GeoModule } from './resources/geo.module';
+import { GeoModule } from './resources/geo/geo.module';
 import { CommunityModule } from './resources/community/community.module';
 
 @Module({
