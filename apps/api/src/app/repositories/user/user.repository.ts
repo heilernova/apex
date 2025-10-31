@@ -33,7 +33,7 @@ export class UserRepository extends BaseRepository {
    * @returns 
    */
   public async getBySessionKey(sessionKey: string): Promise<IUser | null> {
-    const sql = 'select * from vi_users_api where sessionKey = $1';
+    const sql = 'select * from vi_users_api where "sessionKey" = $1';
     const result = await this._db.query<IUser>(sql, [sessionKey]);
     return result.rows[0] ?? null;
   }
