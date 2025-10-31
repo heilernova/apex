@@ -25,7 +25,9 @@ export class SessionDto implements JwtPayload {
   @IsIn(USER_GENDERS)
   public readonly gender!: UserGender;
 
-
   @IsString({ each: true })
   public readonly permissions!: string[];
+
+  @IsUUID()
+  public readonly sessionKey!: string;
 }
