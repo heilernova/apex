@@ -2,11 +2,13 @@ import { Global, Module } from '@nestjs/common';
 import { DatabaseRepository } from './database';
 import { GeoRepository } from './geo/geo.repository';
 import { UserRepository } from './user';
+import { ExerciseRepository } from './exercises';
 
 const repositories = [
   DatabaseRepository,
   GeoRepository,
-  UserRepository
+  UserRepository,
+  ExerciseRepository
 ];
 
 @Global()

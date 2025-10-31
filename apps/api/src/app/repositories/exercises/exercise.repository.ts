@@ -14,13 +14,13 @@ export class ExerciseRepository extends BaseRepository {
    * @param filters 
    * @returns 
    */
-  public async getAll(filters: {
+  public async getAll(filters?: {
     published?: boolean;
   }): Promise<IExercise[]> {
     const whereClauses: string[] = [];
     const params: unknown[] = [];
     let sql = `select * from ${this.tableViewName}`;
-    if (filters.published !== undefined) {
+    if (filters?.published !== undefined) {
       whereClauses.push(`published = $${params.push(filters.published)}`);
     }
     if (whereClauses.length > 0) {
@@ -79,8 +79,8 @@ export class ExerciseRepository extends BaseRepository {
         'updated_at as "updatedAt"',
         'published',
         `jsonb_build_object(
-          'en', e.name_en,
-          'es', e.name_es
+          'en', name_en,
+          'es', name_es
         ) as "name"`,
         'slug',
         'allowed_rm_types as "allowedRmTypes"',
@@ -89,10 +89,10 @@ export class ExerciseRepository extends BaseRepository {
         'muscle_groups as "muscleGroups"',
         'videos',
         `jsonb_build_object(
-          'title', e.seo_title,
-          'description', e.seo_description,
-          'keywords', e.seo_keywords,
-          'openGraphImages', e.seo_open_graph_images
+          'title', seo_title,
+          'description', seo_description,
+          'keywords', seo_keywords,
+          'openGraphImages', seo_open_graph_images
         ) as "seo"`,
         'images'
       ]
