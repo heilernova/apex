@@ -7,6 +7,7 @@ import { AuthGuard } from './auth';
 import { ConfigModule } from './config';
 import { RepositoriesModule } from './repositories/repositories.module';
 import { AuthModule } from './resources/auth/auth.module';
+import { AccountModule } from './resources/account/account.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { AuthModule } from './resources/auth/auth.module';
     }),
     ConfigModule,
     RepositoriesModule,
-    AuthModule
+    AuthModule,
+    AccountModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
