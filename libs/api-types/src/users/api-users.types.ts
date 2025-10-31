@@ -2,7 +2,7 @@ import { AthleteCategory, JudgeLevel } from '@app/schemas/common';
 import { UserGender, UserRole, UserStatus } from '@app/schemas/users';
 import { BaseResponse } from '../common';
 
-export interface AccountInfo {
+export interface ApiUserInfo {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -25,7 +25,7 @@ export interface AccountInfo {
   firstName: string;
   lastName: string;
   gender: UserGender;
-  birthdate: Date;
+  birthdate: string;
   age: number;
   height: number;
   weight: number;
@@ -61,7 +61,7 @@ export interface GetAllAccountQueryParams {
 }
 
 export interface GetAllAccountsResponse extends BaseResponse {
-  data: AccountInfo[];
+  data: ApiUserInfo[];
 }
 
 export interface UpdateAccountRequestBody {

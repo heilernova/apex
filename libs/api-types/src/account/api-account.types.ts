@@ -22,13 +22,21 @@ export interface AccountInfo {
   height: number; // in cm
   weight: number; // in kg
   nationality: string;
-  locationId: string;
+
+  location: {
+    id: string;
+    name: string;
+  };
   
   judgeLevel: JudgeLevel | null;
   category: AthleteCategory;
 }
 
-export interface UpdateAccountRequestBody {
+export interface ApiAccountInfoResponse {
+  data: AccountInfo;
+}
+
+export interface ApiUpdateAccountRequestBody {
   username?: string;
   email?: string;
   cellphone?: string;
