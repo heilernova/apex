@@ -76,6 +76,12 @@ export class UserRepository extends BaseRepository {
     return result.rows;
   }
 
+  public async getAthletes() {
+    const sql = 'select * from vi_athletes_api';
+    const result = await this._db.query<{ id: string; name: string; }>(sql);
+    return result.rows;
+  }
+
   /**
    * Crea un nuevo usuario.
    * @param data 
