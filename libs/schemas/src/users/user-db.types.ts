@@ -22,13 +22,13 @@ export interface UserDb {
   first_name: string;
   last_name: string;
   gender: UserGender;
-  birthdate: Date;
+  birthdate: string;
   height: number;
   weight: number;
   location_id: string;
   nationality: string;
   disciplines: string[];
-  jwt_secret: string;
+  secret_key: string;
   social_media: { [key: string]: string };
   password_hash: string;
   session_key: string;
@@ -50,12 +50,12 @@ export type NewUserDb = PartialBy<OmitBy<UserDb, 'created_at'  | 'updated_at' | 
   | 'athlete_photo'
   | 'social_media'
   | 'category'
-  | 'jwt_secret'
   | 'role'
   | 'permissions'
   | 'status'
   | 'disciplines'
   | 'session_key'
+  | 'secret_key'
 >;
 
 export type UpdateUserDb = Partial<OmitBy<UserDb, 'created_at' | 'updated_at' | 'id'>>;
