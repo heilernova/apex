@@ -104,7 +104,7 @@ export class UserRepository extends BaseRepository {
       nationality: data.nationality,
       disciplines: data.disciplines,
       password_hash: await hash(data.password),
-      jwt_secret: crypto.randomUUID(),
+      secret_key: crypto.randomUUID(),
       session_key: crypto.randomUUID(),
       permissions: []
     }
@@ -145,7 +145,7 @@ export class UserRepository extends BaseRepository {
       nationality: data.nationality,
       location_id: data.locationId,
       username: data.username,
-      jwt_secret: data.jwtSecret,
+      secret_key: data.secretKey,
       status: data.status,
       verified: data.verified,
       permissions: data.permissions,

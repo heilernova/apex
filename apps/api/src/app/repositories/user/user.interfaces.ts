@@ -20,7 +20,7 @@ export interface IUser {
     number: string;
     verified: boolean;
   };
-  jwtSecret: string;
+  secretKey: string;
   sessionKey: string;
   permissions: string[];
   passwordHash: string;
@@ -68,7 +68,7 @@ export interface IUserCreate extends PartialBy<OmitBy<IUser, 'createdAt' | 'upda
   | 'sessionKey'
   | 'permissions'
   | 'status'
-  | 'jwtSecret'
+  | 'secretKey'
 > {
   email: string;
   cellphone: string;

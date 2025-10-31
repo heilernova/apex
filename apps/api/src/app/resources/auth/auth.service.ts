@@ -34,7 +34,7 @@ export class AuthService {
     const payload: RefreshTokenPayload = {
       sub: user.sessionKey,
     };
-    const secret = this._configService.jwtSecret + '+' + user.jwtSecret;
+    const secret = this._configService.jwtSecret + '+' + user.secretKey;
     return this._jwtService.sign(payload, { expiresIn: '90d', secret });
   }
 
