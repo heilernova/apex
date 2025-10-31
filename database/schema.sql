@@ -1,5 +1,4 @@
 -- Esquema de la base de datos para la aplicación Apex para PostgreSQL
--- Autor: Heiler Nova
 
 drop schema public cascade;
 create schema public;
@@ -91,7 +90,7 @@ create table users
   "location_id" uuid not null references geo_administrative_divisions("id"),    --> Ubicación de residencia
   "nationality" char(2) not null references geo_countries("code"),              --> Nacionalidad
   "disciplines" text[] not null default array[]::text[],                        --> Disciplinas practicadas
-  "jwt_secret" uuid not null default gen_random_uuid(),                         --> Secreto único para invalidar tokens JWT
+  "secret_key" uuid not null default gen_random_uuid(),                         --> Secreto único para invalidar tokens JWT
   "session_key" uuid not null default gen_random_uuid(),                        --> Clave de sesión para validar e invalidar sesiones
   "password_hash" text not null,                                                --> Hash de la contraseña
   "social_media" jsonb not null default '{}'::jsonb,                            --> Redes sociales del usuario en formato JSON
@@ -303,7 +302,7 @@ create table workouts
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación de la rutina
   "updated_at" timestamp with time zone default now(),                                 --> Fecha y hora de la última actualización de la rutina
   "published" boolean not null default false,                                          --> Indica si la rutina está publicada
-  "editable " boolean not null default true,                                           --> Indica si la rutina es editable por otros usuarios
+  "editable" boolean not null default true,                                           --> Indica si la rutina es editable por otros usuarios
   "gym_id" uuid references gyms("id"),                                                 --> ID del gimnasio (opcional)
   "name" varchar(100) not null unique,                                                 --> Nombre de la rutina
   "slug" varchar(100) not null unique,                                                 --> Slug para URLs amigables
@@ -589,9 +588,9 @@ select
     'number', u.cellphone_number,
     'verified', u.cellphone_verified
   ) as "cellphone",
-  u.jwt_secret as "jwtSecret",
-  u.password_hash as "passwordHash",
+  u.secret_key as "secretKey",
   u.session_key as "sessionKey",
+  u.password_hash as "passwordHash",
   u.username,
   u.alias,
   u.first_name as "firstName",
