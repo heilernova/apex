@@ -89,4 +89,15 @@ export class GeoRepository extends BaseRepository {
     const result = await this._db.query<IAdministrativeDivision>(sql, params);
     return result.rows;
   }
+
+  /** Verifica si una división administrativa existe */
+  public async existsAdministrativeDivision(divisionId: string): Promise<boolean> {
+    const sql = `
+    select count(1) as count
+    from geo_administrative_divisions
+    where id = $1;
+    `;
+    const result = await this._db.query<{ count: number }>(sql, [divisionId]);
+    return result.rows[0].count > 0;
+  }
 }
