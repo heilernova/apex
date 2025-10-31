@@ -65,8 +65,8 @@ export class GeoRepository extends BaseRepository {
   }
 
   /** Obtener las divisiones administrativas de un país*/
-  public async getAdministrativeDivisions(country: string, levelId: string, parentId?: string): Promise<IAdministrativeDivision[]> {
-    const params = [country, levelId];
+  public async getAdministrativeDivisions(country: string, levelId?: string, parentId?: string): Promise<IAdministrativeDivision[]> {
+    const params = [country.toUpperCase()];
     let sql = `
     select
       id,
@@ -78,12 +78,15 @@ export class GeoRepository extends BaseRepository {
       is_city as "isCity",
       enabled
     from geo_administrative_divisions
-    where country_code = $1 and level_id = $2
+    where country_code = $1
     `;
 
+    if (levelId) {
+      sql += ` and level_id = $${params.push(levelId)}`;
+    }
+
     if (parentId) {
-      sql += ` and parent_id = $3`;
-      params.push(parentId);
+      sql += ` and parent_id = $${params.push(parentId)}`;
     }
 
     const result = await this._db.query<IAdministrativeDivision>(sql, params);

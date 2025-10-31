@@ -10,6 +10,7 @@ import { AuthModule } from './resources/auth/auth.module';
 import { AccountModule } from './resources/account/account.module';
 import { UsersModule } from './resources/users/users.module';
 import { ExercisesModule } from './resources/exercises/exercises.module';
+import { GeoModule } from './resources/geo.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ExercisesModule } from './resources/exercises/exercises.module';
     AccountModule,
     UsersModule,
     ExercisesModule,
+    GeoModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
