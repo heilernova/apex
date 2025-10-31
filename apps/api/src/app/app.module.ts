@@ -8,6 +8,7 @@ import { ConfigModule } from './config';
 import { RepositoriesModule } from './repositories/repositories.module';
 import { AuthModule } from './resources/auth/auth.module';
 import { AccountModule } from './resources/account/account.module';
+import { UsersModule } from './resources/users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AccountModule } from './resources/account/account.module';
     RepositoriesModule,
     AuthModule,
     AccountModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],

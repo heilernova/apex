@@ -27,7 +27,7 @@ export class AccountService {
 
         judgeLevel: user.judgeLevel,
         gender: user.gender,
-        birthdate: user.birthdate.toISOString(),
+        birthdate: user.birthdate,
         age: user.age,
         height: user.height,
         weight: user.weight,
@@ -37,6 +37,7 @@ export class AccountService {
         cellphone: user.cellphone,
         email: user.email,
         verified: user.verified,
+        
       }
     }
   }

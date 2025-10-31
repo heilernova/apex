@@ -4,9 +4,9 @@ import { OmitBy, PartialBy } from '@app/shared';
 
 export interface IUser {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  lastLoginAt: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt: string | null;
   verified: boolean;
   role: UserRole;
   status: UserStatus;
@@ -29,7 +29,7 @@ export interface IUser {
   lastName: string;
   alias: string | null;
   gender: UserGender;
-  birthdate: Date;
+  birthdate: string;
   age: number;
   height: number; // in cm
   weight: number; // in kg
@@ -53,7 +53,7 @@ export interface IUser {
   } | null;
 }
 
-export interface IUserCreate extends PartialBy<OmitBy<IUser, 'createdAt' | 'updatedAt' | 'lastLoginAt' | 'email' | 'cellphone' | 'gym' | 'age' | 'location'>,
+export interface IUserCreate extends PartialBy<OmitBy<IUser, 'createdAt' | 'updatedAt' | 'lastLoginAt' | 'email' | 'cellphone' | 'gym' | 'age' | 'location' | 'passwordHash'>,
   | 'id'
   | 'verified'
   | 'role'
