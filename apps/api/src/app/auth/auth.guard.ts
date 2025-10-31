@@ -1,5 +1,5 @@
 import { Reflector } from '@nestjs/core';
-import { CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Validator } from 'class-validator';
@@ -7,6 +7,7 @@ import { Session } from './auth-session';
 import { IS_PUBLIC_KEY, ROLES_KEY } from './auth.decorator';
 import { SessionDto } from './auth-session.dto';
 
+@Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly _jwtService: JwtService,
