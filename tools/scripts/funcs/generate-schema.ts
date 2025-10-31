@@ -17,7 +17,7 @@ interface UserTest {
   nationality: string;
   category: string;
   username: string;
-  email: string;
+  email_address: string;
   password_hash: string;
   [key: string]: string | number | boolean | object | null;
 }
