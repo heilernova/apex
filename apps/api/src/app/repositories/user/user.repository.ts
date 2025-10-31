@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { isEmail, isUUID } from 'class-validator';
 import { NewUserDb, UpdateUserDb } from '@app/schemas/users';
+import { IAthlete } from '@app/schemas/community';
 import { hash } from 'argon2';
 import { BaseRepository } from '../base-repository';
 import { IUser, IUserCreate, IUserUpdate } from './user.interfaces';
@@ -76,9 +77,9 @@ export class UserRepository extends BaseRepository {
     return result.rows;
   }
 
-  public async getAthletes() {
+  public async getAthletes(): Promise<IAthlete[]> {
     const sql = 'select * from vi_athletes_api';
-    const result = await this._db.query<{ id: string; name: string; }>(sql);
+    const result = await this._db.query<IAthlete>(sql);
     return result.rows;
   }
 
