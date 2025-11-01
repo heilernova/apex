@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { OmitBy, PartialBy } from "@app/shared";
-import { WorkoutContent, WorkoutType } from "./workouts.types";
+import { WorkoutContent, WorkoutStatus, WorkoutType } from "./workouts.types";
 
 export interface IWorkoutDb {
   id: string;
   created_at: Date;
   updated_at: Date;
-  published: boolean;
+  status: WorkoutStatus;
   editable: boolean;
   name: string;
   slug: string;
@@ -25,7 +25,7 @@ export interface IWorkoutDb {
   images: string[];
 }
 
-export interface IWorkoutDbCreate extends PartialBy<OmitBy<IWorkoutDb,'id' | 'created_at' | 'updated_at' | 'published' | 'editable'>,
+export interface IWorkoutDbCreate extends PartialBy<OmitBy<IWorkoutDb,'id' | 'created_at' | 'updated_at' | 'status' | 'editable'>,
   | 'content'
   | 'description'
   | 'time_cap'
