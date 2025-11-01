@@ -293,6 +293,7 @@ create table exercise_rms
   "notes" varchar(200)                                                         --> Notas del registro de RM
 );
 
+create type workout_status as enum('draft', 'published', 'archived');
 create type workout_type as enum('AMRAP', 'EMOM', 'RFT', 'TABATA', 'BENCHMARK', 'FOR_TIME', 'STRENGTH', 'CHIPPER', 'LADDER');
 
 -- Rutinas de entrenamiento
@@ -301,12 +302,12 @@ create table workouts
   "id" uuid primary key default gen_random_uuid(),                                     --> Identificador único de la rutina
   "created_at" timestamp with time zone default now(),                                 --> Fecha y hora de creación de la rutina
   "updated_at" timestamp with time zone default now(),                                 --> Fecha y hora de la última actualización de la rutina
-  "published" boolean not null default false,                                          --> Indica si la rutina está publicada
-  "editable" boolean not null default true,                                           --> Indica si la rutina es editable por otros usuarios
+  "status" workout_status not null default 'draft',                                    --> Estado de la rutina (draft, published, archived)
+  "editable" boolean not null default true,                                            --> Indica si la rutina es editable por otros usuarios
   "gym_id" uuid references gyms("id"),                                                 --> ID del gimnasio (opcional)
   "name" varchar(100) not null unique,                                                 --> Nombre de la rutina
   "slug" varchar(100) not null unique,                                                 --> Slug para URLs amigables
-  "description" varchar(200) not null,                                                 --> Descripción detallada de la rutina
+  "description" varchar(200),                                                          --> Descripción detallada de la rutina
   "type" workout_type not null,                                                        --> Tipo de rutina (AMRAP, EMOM, RFT, TABATA, BENCHMARK, FOR_TIME, STRENGTH, CHIPPER, LADDER)
   "time_cap" interval,                                                                 --> límite de tiempo en horas o minutos (opcional)
   "difficulty" integer not null default 1,
@@ -318,6 +319,13 @@ create table workouts
   "seo_keywords" text[] not null default array[]::text[],                              --> Palabras clave SEO
   "seo_open_graph_images" jsonb not null default '[]'::jsonb,                          --> Imágenes para Open Graph
   "images" text[] not null default array[]::text[]                                     --> Imágenes de la rutina
+);
+
+create table workouts_users
+(
+  "workout_id" uuid not null references workouts("id") on delete cascade,
+  "user_id" uuid not null references users("id") on delete cascade,
+  primary key ("workout_id", "user_id")
 );
 
 -- Historial de los resultados de rutinas realizadas por los usuarios
@@ -332,6 +340,24 @@ create table workout_results
   "reps_completed" integer not null,                                                   --> Repeticiones completadas (para rutinas con repeticiones)
   "notes" varchar(500)                                                                 --> Notas adicionales
 );
+
+create view vi_workouts_with_authors as
+select
+  w.*,
+  jsonb_agg(
+    jsonb_build_object(
+      'id', u.id,
+      'username', u.username,
+      'name', coalesce(u.alias, u.first_name || ' ' || u.last_name),
+	  'avatar', u.avatar
+    )
+  ) as authors
+from workouts w
+inner join workouts_users wu on wu.workout_id = w.id
+inner join users u on wu.user_id = u.id
+group by w.id
+order by w.created_at desc
+;
 
 -- Patrocinadores
 create table sponsors
@@ -696,7 +722,7 @@ select
   w.id,
   w.created_at as "createdAt",
   w.updated_at as "updatedAt",
-  w.published,
+  w.status,
   w.editable,
   w.gym_id as "gymId",
   w.name,
@@ -714,8 +740,20 @@ select
     'keywords', w.seo_keywords,
     'openGraphImages', w.seo_open_graph_images
   ) as "seo",
-  w.images
-from workouts w;
+  w.images,
+  jsonb_agg(
+    jsonb_build_object(
+      'id', u.id,
+      'username', u.username,
+      'name', coalesce(u.alias, u.first_name || ' ' || u.last_name),
+	    'avatar', u.avatar
+    )
+  ) as authors
+from workouts w
+inner join workouts_users wu on wu.workout_id = w.id
+inner join users u on wu.user_id = u.id
+group by w.id
+order by w.created_at desc;
 
 create view vi_gyms_api as
 select
