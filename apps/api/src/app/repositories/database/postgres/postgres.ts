@@ -3,6 +3,7 @@ import { PostgreSQLQueries } from "./postgres-queries";
 import { PostgreSQLTransaction } from "./postgres-transaction";
 
 types.setTypeParser(types.builtins.NUMERIC, (val) => parseFloat(val));
+types.setTypeParser(types.builtins.TIMESTAMPTZ, (val) => val);
 
 
 export class PostgreSQlConnection extends PostgreSQLQueries {
@@ -20,4 +21,3 @@ export class PostgreSQlConnection extends PostgreSQLQueries {
       return new PostgreSQLTransaction(con, this._writing || undefined);
     }
 }
-
