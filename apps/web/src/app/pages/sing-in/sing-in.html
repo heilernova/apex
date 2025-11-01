@@ -1,0 +1,45 @@
+<header>
+
+</header>
+<main>
+  <form nz-form class="sign-in-form" nzLayout="vertical">
+    <div class="form-header">
+      <div class="logo-container" routerLink="/">
+        <img src="logo-v2.svg" alt="Apex">
+        <h2>APEX</h2>
+      </div>
+    </div>
+
+    <div>
+      <nz-form-item>
+        <nz-form-label>
+          Usuario o correo electrónico
+        </nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="Ingrese el usuario o correo electrónico" autocomplete="username"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>
+          Contraseña
+        </nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="Ingrese la contraseña" autocomplete="current-password" [type]="passwordType()" >
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-checkbox style="margin-bottom: 1rem;" (nzCheckedChange)="togglePasswordVisibility(!$event)">Mostrar contraseña</div>
+    </div>
+
+    <div class="form-actions">
+      <button nz-button nzType="primary" class="submit-button" type="button">
+        Iniciar sesión
+      </button>
+      <button nz-button nzType="link" class="forgot-password-link" type="button">
+        ¿Olvidaste tu contraseña?
+      </button>
+    </div>
+  </form>
+</main>
+<footer>
+  <app-layout-footer/>
+</footer>
