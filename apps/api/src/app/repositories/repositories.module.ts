@@ -3,12 +3,14 @@ import { DatabaseRepository } from './database';
 import { GeoRepository } from './geo/geo.repository';
 import { UserRepository } from './user';
 import { ExerciseRepository } from './exercises';
+import { WorkoutRepository } from './workouts';
 
 const repositories = [
   DatabaseRepository,
   GeoRepository,
   UserRepository,
-  ExerciseRepository
+  ExerciseRepository,
+  WorkoutRepository
 ];
 
 @Global()
