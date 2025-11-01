@@ -31,3 +31,17 @@ body {
 .capitalize {
   text-transform: capitalize;
 }
+
+.uppercase {
+  text-transform: uppercase;
+  &::placeholder {
+    text-transform: none;
+  }
+}
+
+.lowercase {
+  text-transform: lowercase;
+  &::placeholder {
+    text-transform: none;
+  }
+}

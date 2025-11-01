@@ -1,0 +1,115 @@
+<form nz-form class="sign-up-form" nzLayout="vertical">
+
+  
+
+
+  <div class="subtitle">Información personal</div>
+  <div class="sign-up-form-info-user">
+    <div class="name">
+      <nz-form-item>
+        <nz-form-label for="firstName" nzRequired>Nombre</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="firstName" name="firstName" type="text" placeholder="Ingresa tu nombre" class="uppercase" />
+        </nz-form-control>
+      </nz-form-item>
+    
+      <nz-form-item>
+        <nz-form-label for="lastName" nzRequired>Apellido</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="lastName" name="lastName" type="text" placeholder="Ingresa tu apellido"  class="uppercase"/>
+        </nz-form-control>
+      </nz-form-item>
+
+    </div>
+    <nz-form-item>
+      <nz-form-label for="alias">
+        Alias (opcional)
+      </nz-form-label>
+      <nz-form-control>
+        <input nz-input id="alias" name="alias" type="text" placeholder="Ingresa un alias"  class="uppercase"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div>
+      <nz-form-item>
+        <nz-form-label for="gender">Género</nz-form-label>
+        <nz-form-control>
+          <nz-select id="gender" name="gender" placeholder="Selecciona tu género">
+            <nz-option nzValue="male" nzLabel="Masculino"></nz-option>
+            <nz-option nzValue="female" nzLabel="Femenino"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label for="birthdate">Fecha de nacimiento</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="birthdate" name="birthdate" type="date" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label for="weight">Peso (Kg)</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="weight" name="weight" type="number" placeholder="Ingresa tu peso" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label for="height">Altura (cm)</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="height" name="height" type="number" placeholder="Ingresa tu altura" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label for="nationality">País de nacimiento  / Nacionalidad</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="nationality" name="nationality" type="text" placeholder="Ingresa tu país de nacimiento" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+  </div>
+
+  <div class="subtitle">Cuenta y seguridad</div>
+  <div class="sign-up-form-account">
+    <nz-form-item>
+      <nz-form-label for="email" nzRequired>Correo electrónico</nz-form-label>
+      <nz-form-control>
+        <input nz-input id="email" name="email" type="email" placeholder="Ingresa tu correo electrónico"  class="lowercase"/>
+      </nz-form-control>
+    </nz-form-item>
+  
+    <nz-form-item>
+      <nz-form-label for="cellphone" nzRequired>Teléfono móvil</nz-form-label>
+      <nz-form-control>
+        <input nz-input id="cellphone" name="cellphone" type="text" placeholder="Teléfono móvil" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label for="username" nzRequired>Nombre de usuario</nz-form-label>
+      <nz-form-control>
+        <input nz-input id="username" name="username" type="text" placeholder="Elige un nombre de usuario" />
+      </nz-form-control>
+    </nz-form-item>
+  
+    <div class="password">
+      <nz-form-item>
+        <nz-form-label for="password" nzRequired>Contraseña</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="password" name="password" type="password" placeholder="Crea una contraseña" [type]="passwordType()" />
+        </nz-form-control>
+      </nz-form-item>
+    
+      <nz-form-item>
+        <nz-form-label for="confirm" nzRequired>Confirmar contraseña</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="confirm" name="confirm" type="password" placeholder="Confirma tu contraseña" [type]="passwordType()" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-checkbox style="margin-bottom: 1rem;" (nzCheckedChange)="togglePasswordVisibility(!$event)">Mostrar contraseña</div>
+  </div>
+
+</form>

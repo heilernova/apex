@@ -1,0 +1,44 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4rem;
+  padding-bottom: 10rem;
+}
+
+form {
+  width: 100%;
+  max-width: 900px;
+}
+
+.form-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    img {
+      height: 90px;
+    }
+  }
+}
+
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+footer {
+  padding: .5rem 1rem;
+}
