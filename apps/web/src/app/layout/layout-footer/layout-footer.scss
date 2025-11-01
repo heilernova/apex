@@ -1,0 +1,20 @@
+.layout-footer-container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  column-gap: 2rem;
+  // font-weight: 500;
+  align-items: center;
+  font-size: small;
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .support {
+    color: var(--palette-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+}
