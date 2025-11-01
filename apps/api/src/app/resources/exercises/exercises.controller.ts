@@ -10,12 +10,14 @@ import {
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { Roles } from '../../auth';
 
 @Controller('exercises')
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
   @Post()
+  @Roles('admin', 'collaborator')
   create(@Body() createExerciseDto: CreateExerciseDto) {
     return this.exercisesService.create(createExerciseDto);
   }
@@ -31,6 +33,7 @@ export class ExercisesController {
   }
 
   @Patch(':id')
+  @Roles('admin', 'collaborator')
   update(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto
@@ -38,6 +41,7 @@ export class ExercisesController {
     return this.exercisesService.update(id, updateExerciseDto);
   }
 
+  @Roles('admin', 'collaborator')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.exercisesService.remove(id);
