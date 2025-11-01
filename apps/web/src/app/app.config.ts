@@ -16,6 +16,10 @@ import { provideServiceWorker } from '@angular/service-worker';
 
 registerLocaleData(localeEs, 'esCO');
 
+// Ng Zorro
+import { es_ES, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
@@ -27,5 +31,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    provideNzI18n(es_ES),
+    provideAnimationsAsync(), // Agregado para animaciones de ng-zorro
   ],
 };
